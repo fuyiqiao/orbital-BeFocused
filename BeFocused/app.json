@@ -1,6 +1,15 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "The app accesses your photos to let you upload a photo."
+        }
+      ]
+    ],
     "name": "BeFocused",
+    "scheme": "BeFocused", 
     "slug": "BeFocused",
     "version": "1.0.0",
     "orientation": "portrait",
