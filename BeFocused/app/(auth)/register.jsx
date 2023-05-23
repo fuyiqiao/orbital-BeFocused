@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from 'react-native-paper';
 
 export default function Register() {
@@ -30,34 +30,46 @@ export default function Register() {
     return (
         <View style={style.container}>
             <View style={style.titleBox}>
-                <Text style={style.title}>BeFocused</Text>
+                <Text style={style.titleText}>BeFocused</Text>
             </View>
             
             <View style={style.emailBox}>
                 <TextInput 
-                    autoCapitalize='none'
-                    textContentType='emailAddress'
-                    placeholder="Email"
+                    style={style.input}
+                    placeholder= "Email"
+                    placeholderTextColor='#b2b4b3'
                     value={email}
-                    onChangeText={setEmail} />
+                    onChangeText={setEmail}
+                    autoCapitalize= 'none'
+                    textContentType= 'emailAddress'
+                    mode='outlined'
+                    outlineColor="#d7d8d8"/>
             </View>
             
             <View style={style.passwordBox}>
                 <TextInput
+                    style={style.input}
                     secureTextEntry
                     autoCapitalize='none'
                     textContentType='password'
                     placeholder="Password"
+                    placeholderTextColor='#b2b4b3'
                     value={password}
-                    onChangeText={setPassword} />
+                    onChangeText={setPassword} 
+                    mode='outlined'
+                    outlineColor="#d7d8d8"/>
             </View>
 
             <View style={style.errorBox}>
                 {errMsg !== "" && <Text>{errMsg}</Text>}
             </View>
 
-            <View style={style.submitBox}>
-                <Button onPress={handleSubmit}>Submit</Button>
+            <View style={style.signUpBox}>
+                <TouchableOpacity 
+                    style={style.signUpButton}
+                    onPress={handleSubmit}>
+                    <Text style={style.buttonText}>Sign Up</Text>
+                </TouchableOpacity>
             </View>
             
             {loading && <ActivityIndicator />}
@@ -69,28 +81,24 @@ const style = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 20
-    },
-    title: {
-        fontSize: 60, 
-        paddingBottom: 50, 
-        textAlign: 'center'
+        padding: 20,
+        backgroundColor:'white'
     },
     titleBox: {
-        flex: 3,
+        flex: 5,
         justifyContent: 'center'
     },
     emailBox: {
-        flex: 1,
-        paddingBottom:30
+        flex: 2,
+        justifyContent: 'center',
     },
     passwordBox: {
-        flex: 1,
-        paddingBottom:30
+        flex: 2,
+        justifyContent: 'center',
     },
-    submitBox: {
-        flex: 5,
-        paddingBottom: 70,
+    signUpBox: {
+        flex: 4,
+        paddingBottom: 50,
         justifyContent: 'flex-end'
     },
     subtitle: {
@@ -99,7 +107,22 @@ const style = StyleSheet.create({
     },
     errorBox: {
         flex: 2,
-        justifyContent: 'center'
-    }
-
+        justifyContent: 'center',
+    },
+    signUpButton: {
+        alignItems: 'center',
+        backgroundColor: '#304d6b',
+        borderRadius: 40,
+        padding: 15
+    },
+    titleText: {
+        fontSize: 60, 
+        textAlign: 'center'
+    },
+    buttonText: {
+        color: 'white'
+    },
+    input: {
+        backgroundColor: '#f0f0f0',
+    },
 });

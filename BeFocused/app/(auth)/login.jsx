@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet,TouchableOpacity, KeyboardAvoidingView } from "react-native";
 import { useState } from "react";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link } from "expo-router";
@@ -29,46 +29,53 @@ export default function LoginPage() {
     }
     return (
         <View style={style.container}>
-            
-        
+            <View style={style.signupButton}>
+                <Link href="/register">
+                    <Button>Sign up</Button>
+                </Link>
+            </View>
+
             <View style={style.titleBox}>
-                <Text style={style.title}>BeFocused</Text>
+                <Text style={style.titleText}>BeFocused</Text>
             </View>
             
             <View style={style.emailBox}>
                 <TextInput 
-                    autoCapitalize='none'
-                    textContentType='emailAddress'
-                    placeholder="Email"
+                    style={style.input}
+                    placeholder= "Email"
+                    placeholderTextColor='#b2b4b3'
                     value={email}
-                    onChangeText={setEmail} />
+                    onChangeText={setEmail}
+                    autoCapitalize= 'none'
+                    textContentType= 'emailAddress'
+                    mode='outlined'
+                    outlineColor="#d7d8d8"/>
             </View>
             
             <View style={style.passwordBox}>
                 <TextInput
+                    style={style.input}
                     secureTextEntry
                     autoCapitalize='none'
                     textContentType='password'
                     placeholder="Password"
+                    placeholderTextColor='#b2b4b3'
                     value={password}
-                    onChangeText={setPassword} />
-            </View>
-
-            <View style={style.signup}>
-                <Link href="/register">
-                    <Button>Sign up</Button>
-                </Link>
+                    onChangeText={setPassword} 
+                    mode='outlined'
+                    outlineColor="#d7d8d8"/>
             </View>
 
             <View style={style.errorBox}>
                 {errMsg !== "" && <Text>{errMsg}</Text>}
             </View>
 
-            <View style={style.submitBox}>
-                <Button 
-                    
-                    style={style.button} 
-                    onPress={handleSubmit}>Submit</Button>
+            <View style={style.loginBox}>
+                <TouchableOpacity 
+                    style={style.loginButton}
+                    onPress={handleSubmit}>
+                    <Text style={style.buttonText}>Log In</Text>
+                </TouchableOpacity>
             </View>
             
             {loading && <ActivityIndicator />}
@@ -80,11 +87,8 @@ const style = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 20
-    },
-    title: {
-        fontSize: 60, 
-        textAlign: 'center'
+        padding: 20,
+        backgroundColor:'white'
     },
     titleBox: {
         flex: 5,
@@ -92,17 +96,13 @@ const style = StyleSheet.create({
     },
     emailBox: {
         flex: 2,
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     passwordBox: {
         flex: 2,
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
-    signup: {
-        flex: 1,
-        justifyContent: 'center'
-    },
-    submitBox: {
+    loginBox: {
         flex: 4,
         paddingBottom: 50,
         justifyContent: 'flex-end'
@@ -113,6 +113,28 @@ const style = StyleSheet.create({
     },
     errorBox: {
         flex: 2,
-        justifyContent: 'center'
-    }
+        justifyContent: 'center',
+    },
+    signupButton: {
+        flex: 1,
+        justifyContent: 'center',
+        flexDirection:'row',
+        alignSelf:'flex-end'
+    },
+    loginButton: {
+        alignItems: 'center',
+        backgroundColor: '#304d6b',
+        borderRadius: 40,
+        padding: 15
+    },
+    titleText: {
+        fontSize: 60, 
+        textAlign: 'center'
+    },
+    buttonText: {
+        color: 'white'
+    },
+    input: {
+        backgroundColor: '#f0f0f0',
+    },
 });
