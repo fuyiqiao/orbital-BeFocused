@@ -1,4 +1,4 @@
-import { View, StyleSheet,TouchableOpacity, KeyboardAvoidingView } from "react-native";
+import { View, StyleSheet,TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { useState } from "react";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link } from "expo-router";
@@ -28,71 +28,78 @@ export default function LoginPage() {
         }
     }
     return (
-        <View style={style.container}>
-            <View style={style.signupButton}>
-                <Link href="/register">
-                    <Button>Sign up</Button>
-                </Link>
-            </View>
+        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={70} style={style.container}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={style.inner}>
+                    <View style={style.signupButton}>
+                        <Link href="/register">
+                            <Button>Sign up</Button>
+                        </Link>
+                    </View>
 
-            <View style={style.titleBox}>
-                <Text style={style.titleText}>BeFocused</Text>
-            </View>
-            
-            <View style={style.emailBox}>
-                <TextInput 
-                    style={style.input}
-                    placeholder= "Email"
-                    placeholderTextColor='#b2b4b3'
-                    value={email}
-                    onChangeText={setEmail}
-                    autoCapitalize= 'none'
-                    textContentType= 'emailAddress'
-                    mode='outlined'
-                    outlineColor="#d7d8d8"/>
-            </View>
-            
-            <View style={style.passwordBox}>
-                <TextInput
-                    style={style.input}
-                    secureTextEntry
-                    autoCapitalize='none'
-                    textContentType='password'
-                    placeholder="Password"
-                    placeholderTextColor='#b2b4b3'
-                    value={password}
-                    onChangeText={setPassword} 
-                    mode='outlined'
-                    outlineColor="#d7d8d8"/>
-            </View>
+                    <View style={style.titleBox}>
+                        <Text style={style.titleText}>BeFocused</Text>
+                    </View>
+                    
+                    <View style={style.emailBox}>
+                        <TextInput 
+                            style={style.input}
+                            placeholder= "Email"
+                            placeholderTextColor='#b2b4b3'
+                            value={email}
+                            onChangeText={setEmail}
+                            autoCapitalize= 'none'
+                            textContentType= 'emailAddress'
+                            mode='outlined'
+                            outlineColor="#d7d8d8"/>
+                    </View>
+                    
+                    <View style={style.passwordBox}>
+                        <TextInput
+                            style={style.input}
+                            secureTextEntry
+                            autoCapitalize='none'
+                            textContentType='password'
+                            placeholder="Password"
+                            placeholderTextColor='#b2b4b3'
+                            value={password}
+                            onChangeText={setPassword} 
+                            mode='outlined'
+                            outlineColor="#d7d8d8"/>
+                    </View>
 
-            <View style={style.errorBox}>
-                {errMsg !== "" && <Text>{errMsg}</Text>}
-            </View>
+                    <View style={style.errorBox}>
+                        {errMsg !== "" && <Text>{errMsg}</Text>}
+                    </View>
 
-            <View style={style.loginBox}>
-                <TouchableOpacity 
-                    style={style.loginButton}
-                    onPress={handleSubmit}>
-                    <Text style={style.buttonText}>Log In</Text>
-                </TouchableOpacity>
-            </View>
-            
-            {loading && <ActivityIndicator />}
-        </View>
+                    <View style={style.loginBox}>
+                        <TouchableOpacity 
+                            style={style.loginButton}
+                            onPress={handleSubmit}>
+                            <Text style={style.buttonText}>Log In</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    {loading && <ActivityIndicator />}
+                </View>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 }
 
 const style = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        backgroundColor:'white',
+        justifyContent: 'center'
+    },
+    inner: {
+        flex: 1,
         padding: 20,
-        backgroundColor:'white'
     },
     titleBox: {
-        flex: 5,
-        justifyContent: 'center'
+        flex: 2,
+        justifyContent: 'flex-start'
     },
     emailBox: {
         flex: 2,
@@ -100,23 +107,19 @@ const style = StyleSheet.create({
     },
     passwordBox: {
         flex: 2,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
     },
     loginBox: {
-        flex: 4,
-        paddingBottom: 50,
-        justifyContent: 'flex-end'
-    },
-    subtitle: {
-        fontSize: 15, 
-        paddingBottom: 10
+        flex: 2,
+        justifyContent:'flex-end',
+        paddingBottom: 20
     },
     errorBox: {
         flex: 2,
         justifyContent: 'center',
     },
     signupButton: {
-        flex: 1,
+        flex: 2,
         justifyContent: 'center',
         flexDirection:'row',
         alignSelf:'flex-end'
@@ -137,4 +140,5 @@ const style = StyleSheet.create({
     input: {
         backgroundColor: '#f0f0f0',
     },
+
 });
