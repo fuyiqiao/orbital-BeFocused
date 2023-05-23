@@ -33,7 +33,7 @@ export default function LoginPage() {
                 <View style={style.inner}>
                     <View style={style.signupButton}>
                         <Link href="/register">
-                            <Button>Sign up</Button>
+                            <Button textColor="#304d6b">Sign up</Button>
                         </Link>
                     </View>
 
@@ -122,7 +122,7 @@ const style = StyleSheet.create({
         flex: 2,
         justifyContent: 'center',
         flexDirection:'row',
-        alignSelf:'flex-end'
+        alignSelf:'flex-end',
     },
     loginButton: {
         alignItems: 'center',
