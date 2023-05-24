@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from 'react-native-paper';
+import { Stack } from "expo-router";
 
 export default function Register() {
     const [email, setEmail] = useState('');
@@ -31,6 +32,11 @@ export default function Register() {
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={70} style={style.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={style.inner}>
+                    
+                    <Stack.Screen
+                        options={{title: "Sign Up"}}
+                    />
+
                     <View style={style.titleBox}>
                         <Text style={style.titleText}>BeFocused</Text>
                     </View>

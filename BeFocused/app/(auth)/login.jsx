@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link } from "expo-router";
 import { supabase } from "../../lib/supabase";
+import { Stack } from "expo-router";
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -31,6 +32,11 @@ export default function LoginPage() {
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={70} style={style.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={style.inner}>
+                    
+                    <Stack.Screen
+                        options={{title: "Login"}}
+                    />
+
                     <View style={style.signupButton}>
                         <Link href="/register">
                             <Button textColor="#304d6b">Sign up</Button>
