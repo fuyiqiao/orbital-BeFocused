@@ -9,7 +9,7 @@
       ]
     ],
     "name": "BeFocused",
-    "scheme": "BeFocused", 
+    "scheme": "BeFocused",
     "slug": "BeFocused",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -30,10 +30,19 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.fuyiqiao.BeFocused"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "65288ca8-aa30-427f-b972-298db887d684"
+      }
     }
   }
 }
