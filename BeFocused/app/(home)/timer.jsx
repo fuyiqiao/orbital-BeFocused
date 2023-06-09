@@ -6,10 +6,12 @@ import { useRouter } from 'expo-router';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { renderNode } from 'react-native-elements/dist/helpers';
 
 const TimePicker = () => {
   const [isPickerShow, setIsPickerShow] = useState(false);
-  const [date, setDate] = useState(new Date(Date.now()));
+  const [date, setDate] = useState(new Date('2023-06-09T00:00:00'));
+  const [inProgress, setInProgress] = useState(false); 
 
   const showPicker = () => {
     setIsPickerShow(true);
@@ -22,17 +24,33 @@ const TimePicker = () => {
     }
   };
 
+  const hidePicker = () => {
+    setIsPickerShow(false); 
+    setInProgress(true); 
+  }; 
+
   return (
     <View style={styles.container}>
-      {/* Display the selected date */}
+      
+      {!inProgress &&
+        <Text>hello</Text>
+        // <CountdownDisplay />
+      }
+      {inProgress && 
+        <CountdownDisplay duration={new Number(date.getHours()*60*60 + date.getMinutes()*60)}/>
+      }
+
+      {/* Display the selected duration */}
       <View style={styles.pickedDateContainer}>
-        <Text style={styles.pickedDate}>{date.toUTCString()}</Text>
+        <Text style={styles.pickedDate}>
+          session length: {date.getHours()}h {date.getMinutes()}min
+        </Text>
       </View>
 
       {/* The button that used to trigger the date picker */}
       {!isPickerShow && (
         <View style={styles.btnContainer}>
-          <Button title="choose your duration" color="#304d6b" onPress={showPicker} />
+          <Button title="start a new session" color="#304d6b" onPress={showPicker} />
         </View>
       )}
 
@@ -48,32 +66,26 @@ const TimePicker = () => {
         />
       )}
       {isPickerShow && (
-        <Button title="done" color="#304d6b"/>
+        <Button title="start now!" color="#304d6b" onPress={hidePicker} />
       )}
     </View>
   );
 }; 
 
-const CountdownDisplay = () => {
+const CountdownDisplay = ({duration}) => {
   const [totalDuration, setTotalDuration] = useState(0);
 
   useEffect(() => {
-    var date = moment().utcOffset('+05:30').format('YYYY-MM-DD hh:mm:ss');
-    var expirydate = '2023-12-23 04:00:45'; //You can set your own date-time
-    var diffr = moment.duration(moment(expirydate).diff(moment(date)));
-    var hours = parseInt(diffr.asHours());
-    var minutes = parseInt(diffr.minutes());
-    var seconds = parseInt(diffr.seconds());
-    var d = hours * 60 * 60 + minutes * 60 + seconds;
-    setTotalDuration(40);
+    setTotalDuration(duration);
+    renderNode(); 
   }, []);
 
   return (
     <CountDown
-      until={totalDuration}
+      until={new Number(totalDuration)}
       timetoShow={('H', 'M', 'S')}
-      onFinish={() => alert('finished')}
-      onPress={() => alert('hello')}
+      onFinish={() => alert('session completed')}
+      onPress={() => alert('not yet :(')}
       size={30}
       digitStyle={{backgroundColor: '#304d6b'}}
       digitTxtStyle={{color: '#f0f0f0'}}
@@ -84,24 +96,12 @@ const CountdownDisplay = () => {
 export default function TimerPage() {
   const [totalDuration, setTotalDuration] = useState(0);
 
-  useEffect(() => {
-    var date = moment().utcOffset('+05:30').format('YYYY-MM-DD hh:mm:ss');
-    var expirydate = '2023-12-23 04:00:45'; //You can set your own date-time
-    var diffr = moment.duration(moment(expirydate).diff(moment(date)));
-    var hours = parseInt(diffr.asHours());
-    var minutes = parseInt(diffr.minutes());
-    var seconds = parseInt(diffr.seconds());
-    var d = hours * 60 * 60 + minutes * 60 + seconds;
-    setTotalDuration(40);
-  }, []);
-
   return (
     <SafeAreaView style={styles.container}>
     <View style={styles.container}>
       <Text style={styles.title}>
         Take charge of your productivity!
       </Text>
-      <CountdownDisplay/>
       <TimePicker/>
     </View>
     </SafeAreaView> 
@@ -112,7 +112,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
@@ -120,5 +119,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     padding: 20,
+  },
+  pickedDate: {
+    textAlign: 'center',
+    fontSize: 15,
+    padding: 15,
   },
 });
