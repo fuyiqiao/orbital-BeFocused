@@ -29,27 +29,27 @@ export default function LoginPage() {
         }
     }
     return (
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={70} style={style.container}>
+        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={70} style={styles.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={style.inner}>
+                <View style={styles.inner}>
                     
                     <Stack.Screen
                         options={{title: "Login"}}
                     />
 
-                    <View style={style.signupButton}>
+                    <View style={styles.signupButton}>
                         <Link href="/register">
                             <Button textColor="#304d6b">Sign up</Button>
                         </Link>
                     </View>
 
-                    <View style={style.titleBox}>
-                        <Text style={style.titleText}>BeFocused</Text>
+                    <View style={styles.titleBox}>
+                        <Text style={styles.titleText}>BeFocused</Text>
                     </View>
                     
-                    <View style={style.emailBox}>
+                    <View style={styles.emailBox}>
                         <TextInput 
-                            style={style.input}
+                            style={styles.input}
                             placeholder= "Email"
                             placeholderTextColor='#b2b4b3'
                             value={email}
@@ -60,9 +60,9 @@ export default function LoginPage() {
                             outlineColor="#d7d8d8"/>
                     </View>
                     
-                    <View style={style.passwordBox}>
+                    <View style={styles.passwordBox}>
                         <TextInput
-                            style={style.input}
+                            style={styles.input}
                             secureTextEntry
                             autoCapitalize='none'
                             textContentType='password'
@@ -74,15 +74,15 @@ export default function LoginPage() {
                             outlineColor="#d7d8d8"/>
                     </View>
 
-                    <View style={style.errorBox}>
+                    <View style={styles.errorBox}>
                         {errMsg !== "" && <Text>{errMsg}</Text>}
                     </View>
 
-                    <View style={style.loginBox}>
+                    <View style={styles.loginBox}>
                         <TouchableOpacity 
-                            style={style.loginButton}
+                            style={styles.loginButton}
                             onPress={handleSubmit}>
-                            <Text style={style.buttonText}>Log In</Text>
+                            <Text style={styles.buttonText}>Log In</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -93,7 +93,7 @@ export default function LoginPage() {
     );
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor:'white',

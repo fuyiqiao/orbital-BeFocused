@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Alert, ImageBackground, Image } from 'react-native'
 import { Camera } from 'expo-camera'
 
-export default function App() {
+export default function CameraPage() {
   const [cameraPermission, setCameraPermission] = useState(false)
   const [image, setImage] = useState(null)
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.back)
@@ -43,36 +43,36 @@ export default function App() {
   }
 
   return (
-    <View style={style.container}>
-        <View style={style.screenDisplay}>
+    <View style={styles.container}>
+        <View style={styles.screenDisplay}>
           {image ? (
             <CameraPreview photo={image} savePhoto={savePhoto} retakePicture={retakePicture} />
           ) : (
-            <Camera type={cameraType} flashMode={flashMode} style={style.cameraDisplay} ref={cameraRef}>
-              <View style={style.allButtonsContainer}>
-                <View style={style.buttonContainer}>
-                  <TouchableOpacity onPress={changeFlashMode} style={style.button}>
-                    <View style={style.iconContainer}>
-                      {flashMode && <Image source={require('../../assets/flashOn.png')} resizeMode='contain' style={style.icon}/>}
-                      {!flashMode && <Image source={require('../../assets/flashOff.png')} resizeMode='contain' style={style.icon}/>}    
+            <Camera type={cameraType} flashMode={flashMode} style={styles.cameraDisplay} ref={cameraRef}>
+              <View style={styles.allButtonsContainer}>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity onPress={changeFlashMode} style={styles.button}>
+                    <View style={styles.iconContainer}>
+                      {flashMode && <Image source={require('../../assets/flashOn.png')} resizeMode='contain' style={styles.icon}/>}
+                      {!flashMode && <Image source={require('../../assets/flashOff.png')} resizeMode='contain' style={styles.icon}/>}    
                     </View>
                   </TouchableOpacity>
                 </View>
-                <View style={style.buttonContainer}>
+                <View style={styles.buttonContainer}>
                   <TouchableOpacity
                     onPress={takePicture}
                     style={{
                       alignSelf:'center'
                     }}>
-                    <View style={style.shutterContainer}>
-                      <Image source={require('../../assets/shutterButton.png')} resizeMode='contain' style={style.icon}/>
+                    <View style={styles.shutterContainer}>
+                      <Image source={require('../../assets/shutterButton.png')} resizeMode='contain' style={styles.icon}/>
                     </View>
                   </TouchableOpacity>
                 </View>
-                <View style={style.buttonContainer}>
-                  <TouchableOpacity onPress={switchCamera} style={style.button}>
-                    <View style={style.iconContainer}>
-                      <Image source={require('../../assets/flipCamera.png')} resizeMode='contain' style={style.icon}/>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity onPress={switchCamera} style={styles.button}>
+                    <View style={styles.iconContainer}>
+                      <Image source={require('../../assets/flipCamera.png')} resizeMode='contain' style={styles.icon}/>
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -86,15 +86,15 @@ export default function App() {
 
 const CameraPreview = ({photo, retakePicture, savePhoto}) => {
   return (
-    <View style={style.preview}>
+    <View style={styles.preview}>
       <ImageBackground source={{uri: photo && photo.uri}} style={{flex: 1}}>
-        <View style={style.optionsContainer}>
-          <View style={style.options}>
-            <TouchableOpacity onPress={retakePicture} style={style.textContainer}>
-              <Text style={style.text}>Re-take</Text>
+        <View style={styles.optionsContainer}>
+          <View style={styles.options}>
+            <TouchableOpacity onPress={retakePicture} style={styles.textContainer}>
+              <Text style={styles.text}>Re-take</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={savePhoto} style={style.textContainer}>
-              <Text style={style.text}>Save</Text>
+            <TouchableOpacity onPress={savePhoto} style={styles.textContainer}>
+              <Text style={styles.text}>Save</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -103,7 +103,7 @@ const CameraPreview = ({photo, retakePicture, savePhoto}) => {
   )
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
