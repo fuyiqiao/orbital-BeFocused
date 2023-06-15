@@ -37,7 +37,7 @@ const TimePicker = () => {
         // <CountdownDisplay />
       }
       {inProgress && 
-        <CountdownDisplay duration={new Number(date.getHours()*60*60 + date.getMinutes()*60)}/>
+        <CountdownDisplay duration={date.getHours()*60*60 + date.getMinutes()*60}/>
       }
 
       {/* Display the selected duration */}
@@ -81,15 +81,43 @@ const CountdownDisplay = ({duration}) => {
   }, []);
 
   return (
-    <CountDown
-      until={new Number(totalDuration)}
+    <View>
+      <CountDown
+      until={totalDuration}
       timetoShow={('H', 'M', 'S')}
       onFinish={() => alert('session completed')}
       onPress={() => alert('not yet :(')}
       size={30}
       digitStyle={{backgroundColor: '#304d6b'}}
       digitTxtStyle={{color: '#f0f0f0'}}
-    />
+      />
+      <PauseAndQuit />
+    </View>
+  ); 
+}
+
+const PauseAndQuit = () => {
+  return (
+    <View style={styles.pauseAndQuitContainer}>
+      <Button 
+        style={styles.pauseButtonContainer} 
+        title="pause" 
+        color="#304d6b"
+      />
+      <Button 
+        style={styles.quitButtonContainer} 
+        title="quit" 
+        color="#304d6b"
+      />
+    </View>
+  ); 
+}
+
+const SessionsList = () => {
+  return (
+    <Text style={styles.title}>
+      Today's Sessions
+    </Text>
   ); 
 }
 
@@ -102,7 +130,8 @@ export default function TimerPage() {
       <Text style={styles.title}>
         Take charge of your productivity!
       </Text>
-      <TimePicker/>
+      <TimePicker />
+      <SessionsList />
     </View>
     </SafeAreaView> 
   ); 
@@ -125,4 +154,16 @@ const styles = StyleSheet.create({
     fontSize: 15,
     padding: 15,
   },
+  pauseButtonContainer: {
+    textDecorationLine: 'underline', 
+  }, 
+  quitButtonContainer: {
+    textDecorationLine: 'underline', 
+  }, 
+  pauseAndQuitContainer: {
+    flexDirection: "row", 
+    justifyContent: "center", 
+    gap: 180, 
+    textDecorationLine: 'underline', 
+  }, 
 });
