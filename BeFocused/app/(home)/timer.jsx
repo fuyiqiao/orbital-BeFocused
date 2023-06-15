@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Alert, FlatList, Pressable, View, Button } from 'react-native';
+import { SafeAreaView, StyleSheet, Alert, FlatList, Pressable, View, Button, TouchableOpacity } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { useEffect, useState } from 'react';
 import { Checkbox, Text } from 'react-native-paper';
@@ -7,6 +7,8 @@ import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { renderNode } from 'react-native-elements/dist/helpers';
+import { BottomSheet } from 'react-native-btr';
+
 
 const TimePicker = () => {
   const [isPickerShow, setIsPickerShow] = useState(false);
@@ -93,17 +95,59 @@ const CountdownDisplay = ({duration}) => {
   ); 
 }
 
+const CameraPrompt = () => {
+  const [visible, setVisible] = useState(false);
+  const toggleBottomNavigationView = () => {
+    setVisible(!visible);
+  };
+  const openCamera = () => {};
+  const deductCoin = () => {};
+
+  return (
+    <View style={styles.bottomNavigationContainer}>
+      <Button
+        onPress={toggleBottomNavigationView}
+        title="Show camera prompt"
+      />
+      <BottomSheet
+        visible={visible}
+        onBackButtonPress={toggleBottomNavigationView}
+        onBackdropPress={toggleBottomNavigationView}
+      >
+        <View style={styles.bottomNavigationView}>
+          <Text style={styles.promptTitle}>Break Time!</Text>
+          <Text
+            style={styles.subtitle}>
+            Take a break and update your study timeline: open the camera app to capture your progress!            
+          </Text>
+          <View style={styles.cameraButtonContainer}>
+            <TouchableOpacity style={styles.cameraButton} onPress={openCamera}>
+              <Text style={styles.cameraButtonText}>Open Camera</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.snoozeButtonContainer}>
+            <TouchableOpacity style={styles.snoozeButton} onPress={deductCoin}>
+              <Text style={styles.snoozeButtonText}>Snooze with 1 Focus Coin</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </BottomSheet>
+    </View>
+  );
+};
+
 export default function TimerPage() {
   const [totalDuration, setTotalDuration] = useState(0);
 
   return (
     <SafeAreaView style={styles.container}>
-    <View style={styles.container}>
-      <Text style={styles.title}>
-        Take charge of your productivity!
-      </Text>
-      <TimePicker/>
-    </View>
+      <View style={styles.container}>
+        <Text style={styles.title}>
+          Take charge of your productivity!
+        </Text>
+        <TimePicker/>
+        <CameraPrompt/>
+      </View>
     </SafeAreaView> 
   ); 
 }
@@ -125,4 +169,60 @@ const styles = StyleSheet.create({
     fontSize: 15,
     padding: 15,
   },
+  bottomNavigationContainer: {
+    flex: 1,
+    margin: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bottomNavigationView: {
+    backgroundColor: 'white',
+    width: '100%',
+    height: 320,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopRightRadius: '20',
+    borderTopLeftRadius:'20',
+  },
+  bottomContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  cameraButtonContainer: {
+    flex: 1,
+    width: 330
+  },
+  snoozeButtonContainer: {
+    flex: 1,
+  },
+  cameraButton: {
+    backgroundColor: '#304d6b',
+    borderRadius: 40,
+    height: 50,
+  },
+  snoozeButton: {
+    alignItems: 'center',
+  },
+  cameraButtonText: {
+    color: 'white',
+    fontSize: 19,
+    textAlign:'center',
+    paddingTop: 12
+  },
+  snoozeButtonText: {
+    color: '#304d6b',
+    fontSize: 15,
+  },
+  promptTitle: {
+    textAlign: 'center',
+    paddingTop: 20,
+    fontSize: 30,
+  },
+  subtitle: {
+    textAlign: 'center',
+    padding: 30,
+    fontSize: 17,
+    color: 'grey'
+  }
 });
