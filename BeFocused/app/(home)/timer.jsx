@@ -2,7 +2,7 @@ import { SafeAreaView, StyleSheet, Alert, FlatList, Pressable, View, Button, Tou
 import { supabase } from '../../lib/supabase';
 import { useEffect, useState } from 'react';
 import { Checkbox, Text } from 'react-native-paper';
-import { useRouter } from 'expo-router';
+import { useRouter, Link } from 'expo-router';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -100,7 +100,7 @@ const CameraPrompt = () => {
   const toggleBottomNavigationView = () => {
     setVisible(!visible);
   };
-  const openCamera = () => {};
+  
   const deductCoin = () => {};
 
   return (
@@ -121,9 +121,11 @@ const CameraPrompt = () => {
             Take a break and update your study timeline: open the camera app to capture your progress!            
           </Text>
           <View style={styles.cameraButtonContainer}>
-            <TouchableOpacity style={styles.cameraButton} onPress={openCamera}>
+            <Link href='../camera' asChild>
+              <TouchableOpacity style={styles.cameraButton} onPress={toggleBottomNavigationView}>
               <Text style={styles.cameraButtonText}>Open Camera</Text>
             </TouchableOpacity>
+            </Link>
           </View>
           <View style={styles.snoozeButtonContainer}>
             <TouchableOpacity style={styles.snoozeButton} onPress={deductCoin}>

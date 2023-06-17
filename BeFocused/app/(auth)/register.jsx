@@ -4,7 +4,7 @@ import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, TouchableWith
 import { Text, TextInput, ActivityIndicator, Button } from 'react-native-paper';
 import { Stack } from "expo-router";
 
-export default function Register() {
+export default function RegisterPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);

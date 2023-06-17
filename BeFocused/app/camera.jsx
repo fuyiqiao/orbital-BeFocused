@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Alert, ImageBackground, Image } from 'react-native'
 import { Camera } from 'expo-camera'
+import { useRouter } from "expo-router";
+
 
 export default function CameraPage() {
   const [cameraPermission, setCameraPermission] = useState(false)
@@ -42,6 +44,7 @@ export default function CameraPage() {
     cameraType === 'back' ? setCameraType('front') : setCameraType('back')
   }
 
+  const router = useRouter();
   return (
     <View style={styles.container}>
         <View style={styles.screenDisplay}>
@@ -49,12 +52,24 @@ export default function CameraPage() {
             <CameraPreview photo={image} savePhoto={savePhoto} retakePicture={retakePicture} />
           ) : (
             <Camera type={cameraType} flashMode={flashMode} style={styles.cameraDisplay} ref={cameraRef}>
+              <View style={styles.exitContainer}>
+                <TouchableOpacity
+                  onPress={() => {
+                    router.back();
+                  }}
+                >
+                  <View style={styles.exitButtonContainer}>
+                    <Image source={require('../assets/exit.png')} resizeMode='contain' style={styles.icon}/>
+                  </View>
+                </TouchableOpacity>
+              </View>
+              
               <View style={styles.allButtonsContainer}>
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity onPress={changeFlashMode} style={styles.button}>
                     <View style={styles.iconContainer}>
-                      {flashMode && <Image source={require('../../assets/flashOn.png')} resizeMode='contain' style={styles.icon}/>}
-                      {!flashMode && <Image source={require('../../assets/flashOff.png')} resizeMode='contain' style={styles.icon}/>}    
+                      {flashMode && <Image source={require('../assets/flashOn.png')} resizeMode='contain' style={styles.icon}/>}
+                      {!flashMode && <Image source={require('../assets/flashOff.png')} resizeMode='contain' style={styles.icon}/>}    
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -65,14 +80,14 @@ export default function CameraPage() {
                       alignSelf:'center'
                     }}>
                     <View style={styles.shutterContainer}>
-                      <Image source={require('../../assets/shutterButton.png')} resizeMode='contain' style={styles.icon}/>
+                      <Image source={require('../assets/shutterButton.png')} resizeMode='contain' style={styles.icon}/>
                     </View>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.buttonContainer}>
                   <TouchableOpacity onPress={switchCamera} style={styles.button}>
                     <View style={styles.iconContainer}>
-                      <Image source={require('../../assets/flipCamera.png')} resizeMode='contain' style={styles.icon}/>
+                      <Image source={require('../assets/flipCamera.png')} resizeMode='contain' style={styles.icon}/>
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -141,6 +156,15 @@ const styles = StyleSheet.create({
     width: 90,
     height: 90
   },
+  exitContainer: {
+    position:'absolute',
+    top:'8%',
+    left: '5%'
+  },
+  exitButtonContainer: {
+    width: 20,
+    height: 20
+  },
   icon: {
     width: undefined,
     height: undefined,
@@ -156,6 +180,9 @@ const styles = StyleSheet.create({
     borderRadius: '50%',
     height: 40,
     width: 40
+  },
+  exitButton: {
+    
   },
   camera: {
     flex: 1,

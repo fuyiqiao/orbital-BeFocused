@@ -7,6 +7,6 @@ export const unstable_settings = {
 
 export default function AuthRoot() {
     return (
-        <Stack />
+        <Stack initialRouteName="login"/>
     );
 }

@@ -1,10 +1,10 @@
 import { Link, Tabs } from "expo-router";
 import { StyleSheet, Text, View, TouchableOpacity, Alert, ImageBackground, Image } from 'react-native'
 
-export default function Root() {
+export default function FeedPage() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>This is the index page</Text>
+      <Text style={styles.text}>This is the feed page</Text>
     </View>
   )
 }
