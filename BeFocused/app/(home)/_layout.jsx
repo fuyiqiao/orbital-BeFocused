@@ -10,7 +10,6 @@ export default function HomeLayout() {
       <Tabs.Screen name="index" options={{href:"/index", title: 'Index'}} />
       <Tabs.Screen name="feed" options={{href:'/feed', title: 'Feed'}} />
       <Tabs.Screen name="profile" options={{href:'/profile', title: 'Profile'}} />
-      
     </Tabs>
   );
 }

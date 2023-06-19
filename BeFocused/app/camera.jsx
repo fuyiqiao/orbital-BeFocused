@@ -181,9 +181,6 @@ const styles = StyleSheet.create({
     height: 40,
     width: 40
   },
-  exitButton: {
-    
-  },
   camera: {
     flex: 1,
     position: "relative",
