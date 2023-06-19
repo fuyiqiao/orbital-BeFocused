@@ -1,27 +1,82 @@
 import React from 'react';
-import {SafeAreaView,ScrollView,StyleSheet,View,Animated,Text, Image, TouchableOpacity} from 'react-native';
+import {SafeAreaView,ScrollView,StyleSheet,View,Animated,Text, Image, TouchableOpacity, FlatList} from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { Link, useRouter } from 'expo-router';
 
 
-const TestingPage = () => {
+export default function ProfilePage() {
   const dummyData = [
-    'Text',
-    'Input',
-    'Button',
-    'Card',
-    'CheckBox',
-    'Divider',
-    'Header',
-    'List Item',
-    'Pricing',
-    'Rating',
-    'Search Bar',
-    'Slider',
-    'Tile',
-    'Icon',
-    'Avatar',
+    {
+      id: '1',
+      date: '19 June 2023',
+      duration: 'Total focus duration: 2h 55min',
+    },
+    {
+      id: '2',
+      date: '15 June 2023',
+      duration: 'Total focus duration: 1h 5min',
+    },
+    {
+      id: '3',
+      date: '10 June 2023',
+      duration: 'Total focus duration: 3h 00min',
+    },
+    {
+      id: '4',
+      date: '9 June 2023',
+      duration: 'Total focus duration: 0h 30min',
+    },
+    {
+      id: '5',
+      date: '4 June 2023',
+      duration: 'Total focus duration: 2h 50min',
+    },
+    {
+      id: '6',
+      date: '27 May 2023',
+      duration: 'Total focus duration: 4h 10min',
+    },
+    {
+      id: '7',
+      date: '23 May 2023',
+      duration: 'Total focus duration: 2h 00min',
+    },
+    {
+      id: '8',
+      date: '15 May 2023',
+      duration: 'Total focus duration: 2h 55min',
+    },
+    {
+      id: '9',
+      date: '8 May 2023',
+      duration: 'Total focus duration: 3h 55min',
+    },
+    {
+      id: '10',
+      date: '4 May 2023',
+      duration: 'Total focus duration: 2h 35min',
+    },
+    {
+      id: '11',
+      date: '1 May 2023',
+      duration: 'Total focus duration: 5h 15min',
+    },
+    {
+      id: '12',
+      date: '22 April 2023',
+      duration: 'Total focus duration: 3h 45min',
+    },
+    {
+      id: '13',
+      date: '20 April 2023',
+      duration: 'Total focus duration: 3h 20min',
+    },
   ];
+
+  const itemSeparator = () => {
+    return <View style={styles.separator}/>;
+  };
+
   let AnimatedHeaderValue = new Animated.Value(0);
   
   const Header_Max_Height = 220;
@@ -113,8 +168,22 @@ const TestingPage = () => {
             />
 
         </Animated.View>
-        <ScrollView
-          style={{paddingTop:50}}
+        <FlatList
+          data={dummyData}
+          renderItem={({item}) => 
+          <View style={styles.itemContainer}>
+            <View style={styles.sessionImageContainer}>
+              <Image source={require('../../assets/studySession.png')} style={styles.sessionImage}/>
+            </View>
+            <View style={styles.entryContainer}>
+              <Text style={styles.dateText}>{item.date}</Text>
+              <Text style={styles.durationText}>{item.duration}</Text>
+            </View>
+          </View>
+          }
+          keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={itemSeparator}
+          contentContainerStyle={{ paddingVertical: 25 }}
           scrollEventThrottle={16}
           onScroll={Animated.event(
             [{
@@ -123,19 +192,11 @@ const TestingPage = () => {
               }
             }],
             { useNativeDriver: false }
-          )}>
-          {/* Put all your Component here inside the ScrollView */}
-          {dummyData.map((item, index) => (
-            <Text style={styles.textStyle} key={index}>
-              {item}
-            </Text>
-          ))}
-        </ScrollView>
+          )}
+        />
       </View>
   );
 };
-
-export default TestingPage;
 
 const styles = StyleSheet.create({
   container: {
@@ -197,16 +258,46 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     position:'absolute',
-    top: '26%',
+    top: '28%',
     left: '83%',
     color: 'white',
-    fontSize: 14,
   },
   settingsButton: {
     position:'absolute',
-    top: '26%',
+    top: '28%',
     left: '5%',
     color: 'white',
     fontSize: 14,
+  },
+  entryContainer:{
+    alignSelf:'center',
+  },
+  separator: { 
+    height: 1, 
+    backgroundColor: '#d4d6d9', 
+    marginLeft: 90, 
+    marginRight: 25
+  },
+  sessionImageContainer: {
+    alignSelf: 'flex-start',
+    padding: 15
+  },
+  sessionImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 10
+  },
+  itemContainer: {
+    flexDirection:'row',
+    alignContent:'flex-start'
+  },
+  dateText: {
+    fontSize: 15,
+    fontWeight:'bold',
+    paddingVertical: 4
+  },
+  durationText: {
+    fontSize: 15,
+    paddingVertical: 4
   }
 });
