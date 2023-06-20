@@ -5,136 +5,90 @@ import { Checkbox, Text } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import CountDown from 'react-native-countdown-component';
 import moment from 'moment';
+import {React} from 'react'; 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { renderNode } from 'react-native-elements/dist/helpers';
+import ReactDOM from "react-dom";
+import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
+import SelectDropdown from 'react-native-select-dropdown'
 
-const TimePicker = () => {
-  const [isPickerShow, setIsPickerShow] = useState(false);
-  const [date, setDate] = useState(new Date('2023-06-09T00:00:00'));
-  const [inProgress, setInProgress] = useState(false); 
+export default function CountDownTimer() {
+  const [key, setKey] = useState(0);
+  const [time, setTime] = useState(30); 
+  const [playing, setPlaying] = useState(false); 
+  const durations = [10, 20, 30, 40, 50, 60];
+  let set_time = 30; 
 
-  const showPicker = () => {
-    setIsPickerShow(true);
-  };
-
-  const onChange = (event, value) => {
-    setDate(value);
-    if (Platform.OS === 'android') {
-      setIsPickerShow(false);
-    }
-  };
-
-  const hidePicker = () => {
-    setIsPickerShow(false); 
-    setInProgress(true); 
-  }; 
-
-  return (
-    <View style={styles.container}>
-      
-      {!inProgress &&
-        <Text>hello</Text>
-        // <CountdownDisplay />
-      }
-      {inProgress && 
-        <CountdownDisplay duration={date.getHours()*60*60 + date.getMinutes()*60}/>
-      }
-
-      {/* Display the selected duration */}
-      <View style={styles.pickedDateContainer}>
-        <Text style={styles.pickedDate}>
-          session length: {date.getHours()}h {date.getMinutes()}min
-        </Text>
-      </View>
-
-      {/* The button that used to trigger the date picker */}
-      {!isPickerShow && (
-        <View style={styles.btnContainer}>
-          <Button title="start a new session" color="#304d6b" onPress={showPicker} />
-        </View>
-      )}
-
-      {/* The duration picker */}
-      {isPickerShow && (
-        <DateTimePicker
-          value={date}
-          mode={Platform.OS === 'ios' ? 'countdown' : 'time'}
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          is24Hour={true}
-          onChange={onChange}
-          style={styles.datePicker}
+  const PauseAndQuit = () => {
+    if (playing) {
+      return <View style={{display: "flex", flexDirection: "row", gap: 200}}>
+        <Button 
+          title= "pause"
+          onPress={() => setPlaying(false)}
+          color="#304d6b"
         />
-      )}
-      {isPickerShow && (
-        <Button title="start now!" color="#304d6b" onPress={hidePicker} />
-      )}
+        <Button 
+        title="quit"
+        color="#304d6b"
+        onPress={() => setKey(prevKey => prevKey + 1)}
+        />
+      </View>
+    } else {
+      return <View style={{display: "flex", flexDirection: "row", gap: 200}}>
+        <Button 
+          title= "start"
+          onPress={() => setPlaying(true)}
+          color="#304d6b"
+        />
+        <Button 
+          title="quit"
+          color="#304d6b"
+          onPress={() => setKey(prevKey => prevKey + 1)}
+        />
+      </View>
+    }
+  }
+
+  return(
+    <View style = {styles.timerContainer}>
+      <CountdownCircleTimer
+        key={key}
+        isPlaying={playing}
+        duration={time * 60}
+        size={300}
+        colors={["#304d6b"]}
+        onComplete={() => ({ shouldRepeat: false, delay: 1 })}
+      >
+        {({ remainingTime }) => 
+          {return (
+            <View>
+              <Text style={styles.timeDisplayContainer}>
+                {Math.floor(remainingTime / 60)} min
+              </Text>
+              <Text style={styles.remainingContainer}>remaining</Text>
+            </View>
+            );}}
+      </CountdownCircleTimer>
+      <PauseAndQuit />
+      <SelectDropdown
+        data={durations}
+        defaultButtonText={"set duration"}
+        onSelect={(selectedItem, index) => {
+          console.log(selectedItem, index)
+          set_time = selectedItem
+          setTime(selectedItem)
+          console.log(set_time)
+        }}
+        buttonTextAfterSelection={(selectedItem, index) => {
+          return <Text style={{textAlign: 'center'}}>{selectedItem} min</Text>
+        }}
+        rowTextForSelection={(item, index) => {
+          return <Text style={{textAlign: 'center'}}>{item} min</Text>
+        }}
+        buttonStyle={{height: 50, width: 300, borderWidth: 1, borderColor: '#304d6b'}}
+      />
     </View>
   );
-}; 
-
-const CountdownDisplay = ({duration}) => {
-  const [totalDuration, setTotalDuration] = useState(0);
-
-  useEffect(() => {
-    setTotalDuration(duration);
-    renderNode(); 
-  }, []);
-
-  return (
-    <View>
-      <CountDown
-      until={totalDuration}
-      timetoShow={('H', 'M', 'S')}
-      onFinish={() => alert('session completed')}
-      onPress={() => alert('not yet :(')}
-      size={30}
-      digitStyle={{backgroundColor: '#304d6b'}}
-      digitTxtStyle={{color: '#f0f0f0'}}
-      />
-      <PauseAndQuit />
-    </View>
-  ); 
-}
-
-const PauseAndQuit = () => {
-  return (
-    <View style={styles.pauseAndQuitContainer}>
-      <Button 
-        style={styles.pauseButtonContainer} 
-        title="pause" 
-        color="#304d6b"
-      />
-      <Button 
-        style={styles.quitButtonContainer} 
-        title="quit" 
-        color="#304d6b"
-      />
-    </View>
-  ); 
-}
-
-const SessionsList = () => {
-  return (
-    <Text style={styles.title}>
-      Today's Sessions
-    </Text>
-  ); 
-}
-
-export default function TimerPage() {
-  const [totalDuration, setTotalDuration] = useState(0);
-
-  return (
-    <SafeAreaView style={styles.container}>
-    <View style={styles.container}>
-      <Text style={styles.title}>
-        Take charge of your productivity!
-      </Text>
-      <TimePicker />
-      <SessionsList />
-    </View>
-    </SafeAreaView> 
-  ); 
 }
 
 const styles = StyleSheet.create({
@@ -142,6 +96,8 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     alignItems: 'center',
+    color: '#304d6b', 
+    textAlign: 'center',
   },
   title: {
     textAlign: 'center',
@@ -149,21 +105,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     padding: 20,
   },
-  pickedDate: {
-    textAlign: 'center',
-    fontSize: 15,
-    padding: 15,
-  },
-  pauseButtonContainer: {
-    textDecorationLine: 'underline', 
-  }, 
-  quitButtonContainer: {
-    textDecorationLine: 'underline', 
-  }, 
-  pauseAndQuitContainer: {
-    flexDirection: "row", 
+  timerContainer: {
+    display: "flex", 
     justifyContent: "center", 
-    gap: 180, 
-    textDecorationLine: 'underline', 
+    flexDirection: "column", 
+    alignItems: "center", 
+    paddingTop: 20,
+    textAlign: 'center',
+  }, 
+  timeDisplayContainer: {
+    alignItems: "center", 
+    color: '#304d6b',
+    fontSize: 50, 
+  }, 
+  remainingContainer: {
+    display: "flex", 
+    justifyContent: "center", 
+    flexDirection: "column", 
+    alignItems: "center",
+    color: '#000000',
+    textAlign: 'center',
   }, 
 });
