@@ -29,7 +29,10 @@ export default function CameraPage() {
     }
   }
 
-  const savePhoto = () => {}
+  const savePhoto = () => {
+    router.back();
+    // todo: save photo to database
+  }
 
   const retakePicture = () => {
     setImage(null)
@@ -202,8 +205,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   }, 
   textContainer: {
-    width: 130,
-    height: 40,
+    width: 110,
+    height: 70,
     alignItems: 'center',
     borderRadius: 4
   }, 

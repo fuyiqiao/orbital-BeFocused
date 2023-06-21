@@ -8,148 +8,150 @@ import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { renderNode } from 'react-native-elements/dist/helpers';
 import { BottomSheet } from 'react-native-btr';
-
-
-const TimePicker = () => {
-  const [isPickerShow, setIsPickerShow] = useState(false);
-  const [date, setDate] = useState(new Date('2023-06-09T00:00:00'));
-  const [inProgress, setInProgress] = useState(false); 
-
-  const showPicker = () => {
-    setIsPickerShow(true);
-  };
-
-  const onChange = (event, value) => {
-    setDate(value);
-    if (Platform.OS === 'android') {
-      setIsPickerShow(false);
-    }
-  };
-
-  const hidePicker = () => {
-    setIsPickerShow(false); 
-    setInProgress(true); 
-  }; 
-
-  return (
-    <View style={styles.container}>
-      
-      {!inProgress &&
-        <Text>hello</Text>
-        // <CountdownDisplay />
-      }
-      {inProgress && 
-        <CountdownDisplay duration={new Number(date.getHours()*60*60 + date.getMinutes()*60)}/>
-      }
-
-      {/* Display the selected duration */}
-      <View style={styles.pickedDateContainer}>
-        <Text style={styles.pickedDate}>
-          session length: {date.getHours()}h {date.getMinutes()}min
-        </Text>
-      </View>
-
-      {/* The button that used to trigger the date picker */}
-      {!isPickerShow && (
-        <View style={styles.btnContainer}>
-          <Button title="start a new session" color="#304d6b" onPress={showPicker} />
-        </View>
-      )}
-
-      {/* The duration picker */}
-      {isPickerShow && (
-        <DateTimePicker
-          value={date}
-          mode={Platform.OS === 'ios' ? 'countdown' : 'time'}
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          is24Hour={true}
-          onChange={onChange}
-          style={styles.datePicker}
-        />
-      )}
-      {isPickerShow && (
-        <Button title="start now!" color="#304d6b" onPress={hidePicker} />
-      )}
-    </View>
-  );
-}; 
-
-const CountdownDisplay = ({duration}) => {
-  const [totalDuration, setTotalDuration] = useState(0);
-
-  useEffect(() => {
-    setTotalDuration(duration);
-    renderNode(); 
-  }, []);
-
-  return (
-    <CountDown
-      until={new Number(totalDuration)}
-      timetoShow={('H', 'M', 'S')}
-      onFinish={() => alert('session completed')}
-      onPress={() => alert('not yet :(')}
-      size={30}
-      digitStyle={{backgroundColor: '#304d6b'}}
-      digitTxtStyle={{color: '#f0f0f0'}}
-    />
-  ); 
-}
-
-const CameraPrompt = () => {
-  const [visible, setVisible] = useState(false);
-  const toggleBottomNavigationView = () => {
-    setVisible(!visible);
-  };
-  
-  const deductCoin = () => {};
-
-  return (
-    <View style={styles.bottomNavigationContainer}>
-      <Button
-        onPress={toggleBottomNavigationView}
-        title="Show camera prompt"
-      />
-      <BottomSheet
-        visible={visible}
-        onBackButtonPress={toggleBottomNavigationView}
-        onBackdropPress={toggleBottomNavigationView}
-      >
-        <View style={styles.bottomNavigationView}>
-          <Text style={styles.promptTitle}>Break Time!</Text>
-          <Text
-            style={styles.subtitle}>
-            Take a break and update your study timeline: open the camera app to capture your progress!            
-          </Text>
-          <View style={styles.cameraButtonContainer}>
-            <Link href='../camera' asChild>
-              <TouchableOpacity style={styles.cameraButton} onPress={toggleBottomNavigationView}>
-              <Text style={styles.cameraButtonText}>Open Camera</Text>
-            </TouchableOpacity>
-            </Link>
-          </View>
-          <View style={styles.snoozeButtonContainer}>
-            <TouchableOpacity style={styles.snoozeButton} onPress={deductCoin}>
-              <Text style={styles.snoozeButtonText}>Snooze with 1 Focus Coin</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </BottomSheet>
-    </View>
-  );
-};
+import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
+import SelectDropdown from 'react-native-select-dropdown'
 
 export default function TimerPage() {
-  const [totalDuration, setTotalDuration] = useState(0);
+  const [visible, setVisible] = useState(false);
 
+  const CountDownTimer = () => {
+    const [key, setKey] = useState(0);
+    const [time, setTime] = useState(1); 
+    const [playing, setPlaying] = useState(false); 
+    const durations = [1, 5, 10, 20, 30, 40, 50, 60];
+    let set_time = 1; 
+  
+    const PauseAndQuit = () => {
+      if (playing) {
+        return <View style={{display: "flex", flexDirection: "row", gap: 200}}>
+          <Button 
+            title= "Pause"
+            onPress={() => setPlaying(false)}
+            color="#304d6b"
+          />
+          <Button 
+          title="Quit"
+          color="#304d6b"
+          onPress={() => {setPlaying(false), setKey(prevKey => prevKey + 1)}}
+          />
+        </View>
+      } else {
+        return <View style={{display: "flex", flexDirection: "row", gap: 200}}>
+          <Button 
+            title= "Start"
+            onPress={() => setPlaying(true)}
+            color="#304d6b"
+          />
+          <Button 
+            title="Quit"
+            color="#304d6b"
+            onPress={() => setKey(prevKey => prevKey + 1)}
+          />
+        </View>
+      }
+    }
+  
+    return(
+      <View style = {styles.timerContainer}>
+        <CountdownCircleTimer
+          key={key}
+          isPlaying={playing}
+          duration={time * 60}
+          size={300}
+          colors={["#304d6b"]}
+          onComplete={() => ({ shouldRepeat: false, delay: 1 })}
+        >
+          {({ remainingTime }) => { 
+            useEffect(() => {
+              if (remainingTime == 0) {
+                setVisible(true);
+              }
+            });
+            
+            if (remainingTime % 60 < 10) {
+              return (
+                <View>
+                  <Text style={styles.timeDisplayContainer}>
+                    {Math.floor(remainingTime / 60)}:0{remainingTime % 60}
+                  </Text>
+                  <Text style={styles.remainingContainer}>remaining</Text>
+                </View> 
+              ); 
+            } else {
+              return (
+                <View>
+                  <Text style={styles.timeDisplayContainer}>
+                    {Math.floor(remainingTime / 60)}:{remainingTime % 60}
+                  </Text>
+                  <Text style={styles.remainingContainer}>remaining</Text>
+                </View> 
+              ); 
+            }}}
+        </CountdownCircleTimer>
+        <PauseAndQuit />
+        <SelectDropdown
+          data={durations}
+          defaultButtonText={"Set Focus Duration"}
+          onSelect={(selectedItem, index) => {
+            console.log(selectedItem, index)
+            set_time = selectedItem
+            setTime(selectedItem)
+            console.log(set_time)
+          }}
+          buttonTextAfterSelection={(selectedItem, index) => {
+            return <Text style={{textAlign: 'center'}}>{selectedItem} min</Text>
+          }}
+          rowTextForSelection={(item, index) => {
+            return <Text style={{textAlign: 'center'}}>{item} min</Text>
+          }}
+          buttonStyle={{marginTop :20, height: 45, width: 320, borderWidth: 1, borderColor: '#304d6b', borderRadius: 30}}
+        />
+      </View>
+    );
+  }
+
+  const CameraPrompt = () => {
+    const toggleBottomNavigationView = () => {
+      setVisible(!visible);
+    };
+    const dismissPrompt = () => {
+      setVisible(!visible);
+      // todo: deduct coins 
+    };
+  
+    return (
+      <View style={styles.bottomNavigationContainer}>
+        <BottomSheet
+          visible={visible}
+          onBackButtonPress={toggleBottomNavigationView}
+        >
+          <View style={styles.bottomNavigationView}>
+            <Text style={styles.promptTitle}>Focus Complete!</Text>
+            <Text
+              style={styles.subtitle}>
+              Update your focus timeline: open the camera to capture your progress!            
+            </Text>
+            <View style={styles.cameraButtonContainer}>
+              <Link href='../camera' asChild>
+                <TouchableOpacity style={styles.cameraButton} onPress={toggleBottomNavigationView}>
+                <Text style={styles.cameraButtonText}>Open Camera</Text>
+              </TouchableOpacity>
+              </Link>
+            </View>
+            <View style={styles.snoozeButtonContainer}>
+              <TouchableOpacity style={styles.snoozeButton} onPress={dismissPrompt}>
+                <Text style={styles.dismissButtonText}>Dismiss with 5 Focus Coins</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </BottomSheet>
+      </View>
+    );
+  };
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.container}>
-        <Text style={styles.title}>
-          Take charge of your productivity!
-        </Text>
-        <TimePicker/>
-        <CameraPrompt/>
-      </View>
+      <CountDownTimer/>
+      <CameraPrompt/>
     </SafeAreaView> 
   ); 
 }
@@ -165,11 +167,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     padding: 20,
-  },
-  pickedDate: {
-    textAlign: 'center',
-    fontSize: 15,
-    padding: 15,
   },
   bottomNavigationContainer: {
     flex: 1,
@@ -212,9 +209,9 @@ const styles = StyleSheet.create({
     textAlign:'center',
     paddingTop: 12
   },
-  snoozeButtonText: {
+  dismissButtonText: {
     color: '#304d6b',
-    fontSize: 15,
+    fontSize: 17,
   },
   promptTitle: {
     textAlign: 'center',
@@ -224,7 +221,32 @@ const styles = StyleSheet.create({
   subtitle: {
     textAlign: 'center',
     padding: 30,
-    fontSize: 17,
+    fontSize: 18,
     color: 'grey'
+  },
+  timerContainer: {
+    display: "flex", 
+    justifyContent: "center", 
+    flexDirection: "column", 
+    alignItems: "center", 
+    paddingTop: 60,
+    textAlign: 'center',
+  }, 
+  timeDisplayContainer: {
+    alignItems: "center", 
+    color: '#304d6b',
+    fontSize: 50, 
+  }, 
+  remainingContainer: {
+    display: "flex", 
+    justifyContent: "center", 
+    flexDirection: "column", 
+    alignItems: "center",
+    color: '#000000',
+    textAlign: 'center',
+  }, 
+  dropdownContainer: {
+    position:'absolute',
+    top: '80%'
   }
 });

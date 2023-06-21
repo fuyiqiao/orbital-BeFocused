@@ -136,65 +136,65 @@ export default function ProfilePage() {
     });
 
   return (
-      <View style={styles.container}>
-        <Animated.View
-          style={[
-            styles.header,
-            {
-              height: animateHeaderHeight,
-              backgroundColor: '#304d6b',
-            },
-          ]}>
-            <Animated.Text style={[styles.expandedTitle, {opacity: animateExpandedTitle}]}>Ballsorter</Animated.Text>
-            <Animated.Text style={[styles.collapsedTitle, {opacity:animateCollapsedTitle}]}>Ballsorter</Animated.Text>
-            <Animated.Text style={[styles.coinsText, {opacity:animateCoins}]}>Focus Coins: 100</Animated.Text>
+    <View style={styles.container}>
+      <Animated.View
+        style={[
+          styles.header,
+          {
+            height: animateHeaderHeight,
+            backgroundColor: '#304d6b',
+          },
+        ]}>
+          <Animated.Text style={[styles.expandedTitle, {opacity: animateExpandedTitle}]}>Ballsorter</Animated.Text>
+          <Animated.Text style={[styles.collapsedTitle, {opacity: animateCollapsedTitle}]}>Ballsorter</Animated.Text>
+          <Animated.Text style={[styles.coinsText, {opacity:animateCoins}]}>Focus Coins: 100</Animated.Text>
 
-            <AnimatedTouchableOpacity 
-              style={[styles.settingsButton, {opacity: animateSettings}]} 
-              onPress={() => {
-                router.push('../settings');
-              }}
-            >
-              <Text style={styles.buttonsText}>Settings</Text>
-            </AnimatedTouchableOpacity>
+          <AnimatedTouchableOpacity 
+            style={[styles.settingsButton, {opacity: animateSettings}]} 
+            onPress={() => {
+              router.push('../settings');
+            }}
+          >
+            <Text style={styles.buttonsText}>Settings</Text>
+          </AnimatedTouchableOpacity>
 
-            <AnimatedTouchableOpacity style={[styles.logoutButton, {opacity: animateLogout}]} onPress={() => supabase.auth.signOut()}>
-              <Text style={styles.buttonsText}>Log Out</Text>
-            </AnimatedTouchableOpacity>
+          <AnimatedTouchableOpacity style={[styles.logoutButton, {opacity: animateLogout}]} onPress={() => supabase.auth.signOut()}>
+            <Text style={styles.buttonsText}>Log Out</Text>
+          </AnimatedTouchableOpacity>
 
-            <Animated.Image
-              style={[styles.image, {opacity: animateImageOpacity}]}
-              source={require('../../assets/sampleProfilePicture.png')}
-            />
+          <Animated.Image
+            style={[styles.image, {opacity: animateImageOpacity}]}
+            source={require('../../assets/sampleProfilePicture.png')}
+          />
 
-        </Animated.View>
-        <FlatList
-          data={dummyData}
-          renderItem={({item}) => 
-          <View style={styles.itemContainer}>
-            <View style={styles.sessionImageContainer}>
-              <Image source={require('../../assets/studySession.png')} style={styles.sessionImage}/>
-            </View>
-            <View style={styles.entryContainer}>
-              <Text style={styles.dateText}>{item.date}</Text>
-              <Text style={styles.durationText}>{item.duration}</Text>
-            </View>
+      </Animated.View>
+      <FlatList
+        data={dummyData}
+        renderItem={({item}) => 
+        <View style={styles.itemContainer}>
+          <View style={styles.sessionImageContainer}>
+            <Image source={require('../../assets/studySession.png')} style={styles.sessionImage}/>
           </View>
-          }
-          keyExtractor={(item) => item.id}
-          ItemSeparatorComponent={itemSeparator}
-          contentContainerStyle={{ paddingVertical: 25 }}
-          scrollEventThrottle={16}
-          onScroll={Animated.event(
-            [{
-              nativeEvent: {
-                contentOffset: { y: AnimatedHeaderValue }
-              }
-            }],
-            { useNativeDriver: false }
-          )}
-        />
-      </View>
+          <View style={styles.entryContainer}>
+            <Text style={styles.dateText}>{item.date}</Text>
+            <Text style={styles.durationText}>{item.duration}</Text>
+          </View>
+        </View>
+        }
+        keyExtractor={(item) => item.id}
+        ItemSeparatorComponent={itemSeparator}
+        contentContainerStyle={{ paddingVertical: 25 }}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{
+            nativeEvent: {
+              contentOffset: { y: AnimatedHeaderValue }
+            }
+          }],
+          { useNativeDriver: false }
+        )}
+      />
+    </View>
   );
 };
 
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   },
   expandedTitle: {
     position:'absolute',
-    top: '22%',
+    top: '25%',
     color: 'white',
     fontSize: 28,
   },
@@ -226,25 +226,17 @@ const styles = StyleSheet.create({
   },
   image: { 
     position:'absolute',
-    top: '53%',
-    width: 140, 
-    height: 140, 
-    borderRadius: 70,
+    top: '56%',
+    width: 130, 
+    height: 130, 
+    borderRadius: 65,
     borderWidth: 3,
     borderColor:'white',
     alignSelf:'center',
   }, 
-  expandedHeader: {
-    position: 'absolute',
-    top:'25%',
-  },
-  collapsedHeader: {
-    position: 'absolute',
-    top:'55%',
-  },
   coinsText: {
     position:'absolute',
-    top: '39%',
+    top: '42%',
     color: '#d4d6d9',
     fontSize: 16,
   },
@@ -258,13 +250,13 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     position:'absolute',
-    top: '28%',
+    top: '31%',
     left: '83%',
     color: 'white',
   },
   settingsButton: {
     position:'absolute',
-    top: '28%',
+    top: '31%',
     left: '5%',
     color: 'white',
     fontSize: 14,
@@ -299,5 +291,10 @@ const styles = StyleSheet.create({
   durationText: {
     fontSize: 15,
     paddingVertical: 4
+  }, 
+  listContainer: {
+    backgroundColor:'white',
+    borderTopLeftRadius: 20, 
+    borderTopRightRadius:20
   }
 });

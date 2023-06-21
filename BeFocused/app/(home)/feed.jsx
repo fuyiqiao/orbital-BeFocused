@@ -1,5 +1,6 @@
 import { Link, Tabs } from "expo-router";
 import { StyleSheet, Text, View, TouchableOpacity, Alert, ImageBackground, Image } from 'react-native'
+import { registerRootComponent } from 'expo';
 
 export default function FeedPage() {
   return (
