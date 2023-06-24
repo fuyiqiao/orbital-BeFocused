@@ -9,6 +9,7 @@ export default function ProfilePage() {
     {
       id: '1',
       username: 'Ballsorter',
+      profilePicture: require('../../assets/sampleProfilePicture.png'),
       post: require('../../assets/samplePost.png'),
       description: 'so tired...',
       time: '8min ago',
@@ -16,8 +17,9 @@ export default function ProfilePage() {
     {
       id: '2',
       username: 'Koalamala',
+      profilePicture: require('../../assets/sampleProfilePicture.png'),
       post: require('../../assets/samplePost2.png'),
-      description: 'so productive tdy!',
+      description: 'v productive tdy!',
       time: '2h ago',
     },
     {
@@ -30,8 +32,9 @@ export default function ProfilePage() {
     {
       id: '4',
       username: 't.teo.kbokki',
+      profilePicture: require('../../assets/sampleProfilePicture.png'),
       post: require('../../assets/samplePost4.png'),
-      description: '',
+      description: "can't wait for exams to be over",
       time: '8h ago',
     },
   
@@ -43,7 +46,8 @@ export default function ProfilePage() {
 
   let AnimatedHeaderValue = new Animated.Value(0);
   
-  const Header_Max_Height = 220;
+  // todo: add search bar and animate header
+  const Header_Max_Height = 100;
   const Header_Min_Height = 100;
   const Title_Max_Height = 30;
   const Title_Min_Height = 23;
@@ -86,24 +90,25 @@ export default function ProfilePage() {
               backgroundColor: '#304d6b',
             },
           ]}>
-            <Animated.Text style={[styles.expandedTitle, {opacity: animateExpandedTitle}]}>{currDate}</Animated.Text>
-            <Animated.Text style={[styles.collapsedTitle, {opacity:animateCollapsedTitle}]}>{currDate}</Animated.Text>
+            <Animated.Text style={styles.collapsedTitle}>{currDate}</Animated.Text>
 
         </Animated.View>
         <FlatList
           data={dummyData}
           renderItem={({item}) => 
           <View style={styles.itemContainer}>
-            <View style={styles.topTextContainer}>
-              <Text style={styles.usernameText}>{item.username}</Text>
+            <View style={styles.topRowContainer}>
+              <View style={styles.profileContainer}>
+                <Image source={require('../../assets/sampleProfilePicture.png')} style={styles.profilePicture}/>
+                <Text style={styles.usernameText}>{item.username}</Text>
+              </View>
               <Text style={styles.timeText}>{item.time}</Text>
             </View>
             <View style={styles.sessionImageContainer}>
               <Image source={item.post} style={styles.sessionImage}/>
             </View>
-            <View style={styles.entryContainer}>
-              <Text style={styles.dateText}>{item.date}</Text>
-              <Text style={styles.durationText}>{item.duration}</Text>
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.descriptionText}>{item.description}</Text>
             </View>
           </View>
           }
@@ -122,10 +127,7 @@ export default function ProfilePage() {
         />
       </View>
   );
-  
 };
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -169,8 +171,9 @@ const styles = StyleSheet.create({
   separator: { 
     height: 1, 
     backgroundColor: '#d4d6d9', 
-    marginLeft: 90, 
-    marginRight: 25
+    width: 360, 
+    alignSelf: 'center',
+    marginVertical: 15
   },
   sessionImageContainer: {
     alignSelf: 'center',
@@ -178,24 +181,42 @@ const styles = StyleSheet.create({
   },
   sessionImage: {
     width: 360,
-    height: 300,
-    borderRadius: 10
+    height: 360,
+    borderRadius: 15
   },
   itemContainer: {
     flexDirection:'column',
     alignContent:'flex-start'
   },
-  topTextContainer: {
+  topRowContainer: {
     flexDirection: 'row',
-    justifyContent:'space-between',
-    padding: 20
+    paddingHorizontal: 14,
+    alignItems:'center',
+    justifyContent:'space-between'
   },
   usernameText: {
     fontSize: 17,
     fontWeight:'bold',
+    paddingLeft:10
   },
   timeText: {
     color: '#919090',
-    fontSize: 15,
+    fontSize: 17,
+  },
+  profilePicture: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignSelf:'center', 
+  }, 
+  profileContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  descriptionContainer: {
+    paddingHorizontal: 15
+  },
+  descriptionText: {
+    fontSize: 17
   },
 });
