@@ -150,10 +150,36 @@ export default function TimerPage() {
       </View>
     );
   };
+
+  const todayData = [[8.31, 8.35, "Paused"], [9.05, 9.07, "Quit"], [9.35, 10.35, "Completed"]]; 
+  const SingleSession = ({startTime, endTime, status}) => {
+    return(
+        <View style={styles.singleSessionContainer2}>
+            <View style={styles.circle} />
+            <View style={styles.singleSessionContainer}>
+                <Text>{startTime} am - {endTime} am</Text>
+                <Text>{status}</Text>
+            </View>
+        </View>
+    ); 
+  }; 
+
+  const Logs = () => {
+    return(
+      <View>
+        <Text>Today's Sessions</Text>
+        <SingleSession startTime={todayData[0][0]} endTime={todayData[0][1]} status={todayData[0][2]}/>
+        <SingleSession startTime={todayData[1][0]} endTime={todayData[1][1]} status={todayData[1][2]}/>
+        <SingleSession startTime={todayData[2][0]} endTime={todayData[2][1]} status={todayData[2][2]}/>
+      </View>
+    ); 
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <CountDownTimer/>
       <CameraPrompt/>
+      <Logs/>
     </SafeAreaView> 
   ); 
 }
@@ -250,5 +276,24 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     position:'absolute',
     top: '80%'
-  }
+  }, 
+  singleSessionContainer: {
+    display: "flex", 
+    flexDirection: "row", 
+    gap: 110, 
+    padding: 10, 
+  }, 
+  singleSessionContainer2: {
+    display: "flex", 
+    flexDirection: "row", 
+    gap: 10, 
+    padding: 10, 
+    alignItems: "baseline", 
+  }, 
+  circle: {
+    width: 20,
+    height: 20,
+    borderRadius: 20 / 2,
+    backgroundColor: "#304d6b",
+  },
 });
