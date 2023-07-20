@@ -1,8 +1,8 @@
-import React from 'react';
-import {SafeAreaView,ScrollView,StyleSheet,View,Animated,Text, Image, TouchableOpacity, FlatList} from 'react-native';
+import { React, useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, View, Animated, Text, Image, TouchableOpacity, FlatList } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { Link, useRouter } from 'expo-router';
-
+import { useAuth } from "../../contexts/auth";
 
 export default function ProfilePage() {
   const dummyData = [
@@ -135,6 +135,30 @@ export default function ProfilePage() {
       extrapolate: 'clamp',
     });
 
+  const { user } = useAuth();
+  const [currUser, setUser] = useState(''); 
+  const [log, setLog] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function fetchUsername() {
+    setRefreshing(true);
+    let { data } = await supabase.from('profiles').select('username').eq('id', user.id);
+    let { username:temp } = data[0]; 
+    setRefreshing(false);
+    setUser(temp); 
+  }
+
+  useEffect(() => {
+    fetchUsername();
+  }, []);
+
+  useEffect(() => {
+    if (refreshing) {
+      fetchUsername();
+      setRefreshing(false);
+    }
+  }, [refreshing]);
+
   return (
     <View style={styles.container}>
       <Animated.View
@@ -145,8 +169,8 @@ export default function ProfilePage() {
             backgroundColor: '#304d6b',
           },
         ]}>
-          <Animated.Text style={[styles.expandedTitle, {opacity: animateExpandedTitle}]}>Ballsorter</Animated.Text>
-          <Animated.Text style={[styles.collapsedTitle, {opacity: animateCollapsedTitle}]}>Ballsorter</Animated.Text>
+          <Animated.Text style={[styles.expandedTitle, {opacity: animateExpandedTitle}]}>{currUser}</Animated.Text>
+          <Animated.Text style={[styles.collapsedTitle, {opacity: animateCollapsedTitle}]}>{currUser}</Animated.Text>
           <Animated.Text style={[styles.coinsText, {opacity:animateCoins}]}>Focus Coins: 100</Animated.Text>
 
           <AnimatedTouchableOpacity 
