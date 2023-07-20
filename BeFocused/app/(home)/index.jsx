@@ -1,10 +1,32 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import {SafeAreaView,ScrollView,StyleSheet,View,Animated,Text, Image, TouchableOpacity, FlatList} from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { Link, useRouter } from 'expo-router';
 import { ListItem, SearchBar } from "react-native-elements";
 
 export default function ProfilePage() {
+
+  const [feed, setFeed] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function fetchPosts() {
+    setRefreshing(true);
+    let { data } = await supabase.from('posts').select('*');
+    setRefreshing(false);
+    setFeed(data);
+  }
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  useEffect(() => {
+    if (refreshing) {
+      fetchPosts();
+      setRefreshing(false);
+    }
+  }, [refreshing]);
+
   const dummyData = [
     {
       id: '1',
@@ -79,7 +101,7 @@ export default function ProfilePage() {
   const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   const currDate = days[d.getDay()] + ", " + d.getDate() + ' ' + months[d.getMonth()];
-  
+
   return (
       <View style={styles.container}>
         <Animated.View
@@ -94,7 +116,7 @@ export default function ProfilePage() {
 
         </Animated.View>
         <FlatList
-          data={dummyData}
+          data={feed}
           renderItem={({item}) => 
           <View style={styles.itemContainer}>
             <View style={styles.topRowContainer}>
@@ -105,7 +127,7 @@ export default function ProfilePage() {
               <Text style={styles.timeText}>{item.time}</Text>
             </View>
             <View style={styles.sessionImageContainer}>
-              <Image source={item.post} style={styles.sessionImage}/>
+              <Image source={{uri: item.post}} style={styles.sessionImage}/>
             </View>
             <View style={styles.descriptionContainer}>
               <Text style={styles.descriptionText}>{item.description}</Text>
