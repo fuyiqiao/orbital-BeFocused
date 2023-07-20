@@ -1,8 +1,9 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Alert, ImageBackground, Image } from 'react-native'
 import { Camera } from 'expo-camera'
 import { useRouter } from "expo-router";
-
+import { supabase } from '../lib/supabase';
+import { useAuth } from "../contexts/auth";
 
 export default function CameraPage() {
   const [cameraPermission, setCameraPermission] = useState(false)
@@ -10,6 +11,28 @@ export default function CameraPage() {
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.back)
   const [flashMode, setFlashMode] = useState(false)
   const cameraRef = useRef(null);
+  const { user } = useAuth();
+  const [currUser, setUser] = useState(''); 
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function fetchUsername() {
+    setRefreshing(true);
+    let { data } = await supabase.from('profiles').select('username').eq('id', user.id);
+    let { username:temp } = data[0]; 
+    setRefreshing(false);
+    setUser(temp); 
+  }
+
+  useEffect(() => {
+    fetchUsername();
+  }, []);
+
+  useEffect(() => {
+    if (refreshing) {
+      fetchUsername();
+      setRefreshing(false);
+    }
+  }, [refreshing]);
 
   const startCamera = async () => {
     const {status} = await Camera.requestCameraPermissionsAsync()
@@ -29,9 +52,36 @@ export default function CameraPage() {
     }
   }
 
-  const savePhoto = () => {
+  const savePhoto = async () => {
     router.back();
-    // todo: save photo to database
+    console.log(image); 
+    let uploadedImage = null;
+    if (image != null) {
+      const { data, error } = await supabase.storage.from('images').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
+      if (error != null) {
+        console.log(error);
+        return;
+      }
+      const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path);
+      uploadedImage = publicUrl;
+      console.log(uploadedImage); 
+    }
+
+
+    const { error } = await supabase.from('posts').insert({ 
+      creator_id: user.id, 
+      post: uploadedImage,
+      username: currUser, 
+      description: "study", 
+      create_date: new Date().toISOString(), 
+      create_time: new Date().toISOString()
+    }).select().single();
+
+    if (error != null) {
+      console.log(error);
+      return;
+    }
+    console.log("image uploaded 2"); 
   }
 
   const retakePicture = () => {

@@ -11,8 +11,6 @@ import { BottomSheet } from 'react-native-btr';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
 import SelectDropdown from 'react-native-select-dropdown'
 
-//comment
-
 export default function TimerPage() {
   const [visible, setVisible] = useState(false);
 
