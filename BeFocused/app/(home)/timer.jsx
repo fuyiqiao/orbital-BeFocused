@@ -3,10 +3,6 @@ import { supabase } from '../../lib/supabase';
 import { React, useEffect, useState } from 'react';
 import { Checkbox, Text } from 'react-native-paper';
 import { useRouter, Link } from 'expo-router';
-import CountDown from 'react-native-countdown-component';
-import moment from 'moment';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { renderNode } from 'react-native-elements/dist/helpers';
 import { BottomSheet } from 'react-native-btr';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
 import SelectDropdown from 'react-native-select-dropdown'

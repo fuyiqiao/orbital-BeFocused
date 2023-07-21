@@ -5,20 +5,12 @@ import { Checkbox, Text } from 'react-native-paper';
 import { useRouter, Link } from 'expo-router';
 import { Header } from 'react-native-elements';
 import { BarChart } from "react-native-gifted-charts";
+import { useAuth } from "../../contexts/auth";
 
 export default function summary() {
     const weekData = [5, 4, 5, 4, 5, 4, 5]; 
     const todayData = [[8.31, 2], [9.05, 1], [9.35, 1], [9.55, 4]]; 
-    //todo: link data to backend
-
-    const label1 = () => {
-        return(
-            <View>
-                <Text>mon</Text>
-                <Text>{weekData[0]}</Text>
-            </View>
-        )
-    }
+    const { user } = useAuth();
     
     const chartData=[ 
         {value: weekData[0], label: 'mon'},
@@ -64,16 +56,64 @@ export default function summary() {
         ); 
     }
 
+    const [todaysSessions, setSessions] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+
+    async function fetchSessions() {
+        setRefreshing(true);
+        let { data } = await supabase.from('sessions').select('start_time, end_time, coins_earned').eq('user_id', user.id);
+        setRefreshing(false);
+        setSessions(data);
+        console.log(todaysSessions); 
+    }
+
+    useEffect(() => {
+        fetchSessions();
+    }, []);
+
+    useEffect(() => {
+        if (refreshing) {
+        fetchSessions();
+        setRefreshing(false);
+        }
+    }, [refreshing]);
+
+    const OneSession = ({data}) => {
+        let {start_time: rawEndTime, end_time: rawStartTime, coins_earned: coins} = data; 
+        const c = { time: rawStartTime };
+        const startTime = (new Date(c.time).toLocaleTimeString()); 
+        const d = { time: rawEndTime }; 
+        const endTime = (new Date(d.time).toLocaleTimeString()); 
+        return(
+            <View style={styles.singleSessionContainer2}>
+                <View style={styles.circle} />
+                <View style={styles.singleSessionContainer}>
+                    <Text>{startTime} - {endTime} </Text>
+                    <Text>{coins} Focus Coin</Text>
+                </View>
+            </View>
+        ); 
+    }; 
+
+    const TodaysLogs = () => {
+        const display = []; 
+        for (let i = 0; i < todaysSessions.length; i++) {
+            display.push(<OneSession data={todaysSessions[i]} />)
+        }
+        return(
+            <View>
+              {display}
+            </View>
+        ); 
+    }
+
     return(
         <SafeAreaView>
             <View style={styles.container}>
                 <Text style={styles.titleText}>Summary</Text>
                 <Chart />
                 <Text style={styles.subheaderText}>Today's Sessions</Text>
-                <SingleSession time={todayData[0][0]} coins={todayData[0][1]}/>
-                <SingleSession time={todayData[1][0]} coins={todayData[1][1]}/>
-                <SingleSession time={todayData[2][0]} coins={todayData[2][1]}/>
-                <SingleSession time={todayData[3][0]} coins={todayData[3][1]}/>
+                <TodaysLogs/>
             </View>
         </SafeAreaView>
     ); 
@@ -108,13 +148,13 @@ const styles = StyleSheet.create({
     singleSessionContainer: {
         display: "flex", 
         flexDirection: "row", 
-        gap: 150, 
+        gap: 70, 
         padding: 10, 
     }, 
     singleSessionContainer2: {
         display: "flex", 
         flexDirection: "row", 
-        gap: 10, 
+        gap: 5, 
         padding: 10, 
         alignItems: "baseline", 
     }, 
