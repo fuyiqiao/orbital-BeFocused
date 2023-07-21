@@ -1,6 +1,6 @@
-import { SafeAreaView, StyleSheet, Alert, FlatList, Pressable, View, Button, TouchableOpacity } from 'react-native';
+import { SafeAreaView, StyleSheet, Alert, FlatList, Pressable, View, Button, TouchableOpacity, ScrollView } from 'react-native';
 import { supabase } from '../../lib/supabase';
-import { useEffect, useState } from 'react';
+import { React, useEffect, useState } from 'react';
 import { Checkbox, Text } from 'react-native-paper';
 import { useRouter, Link } from 'expo-router';
 import CountDown from 'react-native-countdown-component';
@@ -10,42 +10,89 @@ import { renderNode } from 'react-native-elements/dist/helpers';
 import { BottomSheet } from 'react-native-btr';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
 import SelectDropdown from 'react-native-select-dropdown'
+import { useAuth } from "../../contexts/auth";
 
 export default function TimerPage() {
   const [visible, setVisible] = useState(false);
+  const { user } = useAuth();
 
   const CountDownTimer = () => {
     const [key, setKey] = useState(0);
     const [time, setTime] = useState(1); 
+    const [start, setStart] = useState(0); 
+    const [end, setEnd] = useState(0); 
     const [playing, setPlaying] = useState(false); 
+    const [quit, setQuit] = useState(false); 
     const durations = [1, 5, 10, 20, 30, 40, 50, 60];
     let set_time = 1; 
+
+    const logSession = async () => {
+      const { error } = await supabase.from('sessions').insert({ 
+        user_id: user.id, 
+        start_time: start, 
+        end_time: new Date().toISOString(), 
+        coins_earned: time, 
+        status: "Completed"
+      }).select().single();
+      
+      console.log(start, end, "Completed"); 
+
+      if (error != null) {
+        console.log(error);
+        return;
+      }
+    }
+
+    const logQuitSession = async () => {
+      const { error } = await supabase.from('sessions').insert({ 
+        user_id: user.id, 
+        start_time: start, 
+        end_time: new Date().toISOString(), 
+        coins_earned: time, 
+        status: "Quit"
+      }).select().single();
+      
+      console.log(start, end, "quit"); 
+
+      if (error != null) {
+        console.log(error);
+        return;
+      }
+    }
   
     const PauseAndQuit = () => {
       if (playing) {
         return <View style={{display: "flex", flexDirection: "row", gap: 200}}>
           <Button 
             title= "Pause"
-            onPress={() => setPlaying(false)}
+            onPress={() => {setPlaying(false)}}
             color="#304d6b"
           />
           <Button 
           title="Quit"
           color="#304d6b"
-          onPress={() => {setPlaying(false), setKey(prevKey => prevKey + 1)}}
+          onPress={() => {
+            setPlaying(false), 
+            setKey(prevKey => prevKey + 1), 
+            setEnd(new Date().toISOString()), 
+            setQuit(true), 
+            logQuitSession()}}
           />
         </View>
       } else {
         return <View style={{display: "flex", flexDirection: "row", gap: 200}}>
           <Button 
             title= "Start"
-            onPress={() => setPlaying(true)}
+            onPress={() => {
+              setPlaying(true), 
+              setStart(new Date().toISOString()), 
+              setQuit(false)}}
             color="#304d6b"
           />
           <Button 
             title="Quit"
             color="#304d6b"
-            onPress={() => setKey(prevKey => prevKey + 1)}
+            onPress={() => {setKey(prevKey => prevKey + 1)}}
           />
         </View>
       }
@@ -59,7 +106,10 @@ export default function TimerPage() {
           duration={time * 60}
           size={300}
           colors={["#304d6b"]}
-          onComplete={() => ({ shouldRepeat: false, delay: 1 })}
+          onComplete={() => {
+            logSession(); 
+            return ({ shouldRepeat: false, delay: 1 })
+          }}
         >
           {({ remainingTime }) => { 
             useEffect(() => {
@@ -149,26 +199,53 @@ export default function TimerPage() {
     );
   };
 
-  const todayData = [[8.31, 8.35, "Paused"], [9.05, 9.07, "Quit"], [9.35, 10.35, "Completed"]]; 
-  const SingleSession = ({startTime, endTime, status}) => {
+  const [todaysSessions, setSessions] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function fetchSessions() {
+    setRefreshing(true);
+    let { data } = await supabase.from('sessions').select('start_time, end_time, status').eq('user_id', user.id);
+    setRefreshing(false);
+    setSessions(data);
+    console.log(todaysSessions); 
+  }
+
+  useEffect(() => {
+    fetchSessions();
+  }, []);
+
+  useEffect(() => {
+    if (refreshing) {
+      fetchSessions();
+      setRefreshing(false);
+    }
+  }, [refreshing]);
+
+  const OneSession = ({data}) => {
+    let {start_time: rawEndTime, end_time: rawStartTime, status: stat} = data; 
+    const c = { time: rawStartTime };
+    const startTime = (new Date(c.time).toLocaleTimeString()); 
+    const d = { time: rawEndTime }; 
+    const endTime = (new Date(d.time).toLocaleTimeString()); 
     return(
         <View style={styles.singleSessionContainer2}>
             <View style={styles.circle} />
             <View style={styles.singleSessionContainer}>
-                <Text>{startTime} am - {endTime} am</Text>
-                <Text>{status}</Text>
+                <Text>{startTime} - {endTime} </Text>
+                <Text>{stat}</Text>
             </View>
         </View>
     ); 
   }; 
 
-  const Logs = () => {
+  const TodaysLogs = () => {
+    const display = []; 
+    for (let i = 0; i < todaysSessions.length; i++) {
+      display.push(<OneSession data={todaysSessions[i]} />)
+    }
     return(
       <View>
-        <Text>Today's Sessions</Text>
-        <SingleSession startTime={todayData[0][0]} endTime={todayData[0][1]} status={todayData[0][2]}/>
-        <SingleSession startTime={todayData[1][0]} endTime={todayData[1][1]} status={todayData[1][2]}/>
-        <SingleSession startTime={todayData[2][0]} endTime={todayData[2][1]} status={todayData[2][2]}/>
+        {display}
       </View>
     ); 
   }
@@ -177,7 +254,10 @@ export default function TimerPage() {
     <SafeAreaView style={styles.container}>
       <CountDownTimer/>
       <CameraPrompt/>
-      <Logs/>
+      <Text style = {styles.subtitle}>Today's Sessions</Text>
+      <ScrollView>
+        <TodaysLogs/>
+      </ScrollView>
     </SafeAreaView> 
   ); 
 }
@@ -248,7 +328,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 30,
     fontSize: 18,
-    color: 'grey'
+    color: 'grey', 
   },
   timerContainer: {
     display: "flex", 
@@ -278,13 +358,13 @@ const styles = StyleSheet.create({
   singleSessionContainer: {
     display: "flex", 
     flexDirection: "row", 
-    gap: 110, 
-    padding: 10, 
+    gap: 70, 
+    padding: 10,
   }, 
   singleSessionContainer2: {
     display: "flex", 
     flexDirection: "row", 
-    gap: 10, 
+    gap: 5, 
     padding: 10, 
     alignItems: "baseline", 
   }, 
