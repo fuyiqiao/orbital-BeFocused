@@ -137,15 +137,17 @@ export default function ProfilePage() {
 
   const { user } = useAuth();
   const [currUser, setUser] = useState(''); 
+  const [coins, setCoins] = useState(0); 
   const [log, setLog] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
   async function fetchUsername() {
     setRefreshing(true);
-    let { data } = await supabase.from('profiles').select('username').eq('id', user.id);
-    let { username:temp } = data[0]; 
+    let { data } = await supabase.from('profiles').select('username, coin_count').eq('id', user.id);
+    let { username:temp, coin_count:temp2 } = data[0]; 
     setRefreshing(false);
     setUser(temp); 
+    setCoins(temp2); 
   }
 
   useEffect(() => {
@@ -171,7 +173,7 @@ export default function ProfilePage() {
         ]}>
           <Animated.Text style={[styles.expandedTitle, {opacity: animateExpandedTitle}]}>{currUser}</Animated.Text>
           <Animated.Text style={[styles.collapsedTitle, {opacity: animateCollapsedTitle}]}>{currUser}</Animated.Text>
-          <Animated.Text style={[styles.coinsText, {opacity:animateCoins}]}>Focus Coins: 100</Animated.Text>
+          <Animated.Text style={[styles.coinsText, {opacity:animateCoins}]}>Focus Coins: {coins}</Animated.Text>
 
           <AnimatedTouchableOpacity 
             style={[styles.settingsButton, {opacity: animateSettings}]} 

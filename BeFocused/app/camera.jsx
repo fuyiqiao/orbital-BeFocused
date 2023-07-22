@@ -73,8 +73,8 @@ export default function CameraPage() {
       post: uploadedImage,
       username: currUser, 
       description: "study", 
-      create_date: new Date().toISOString(), 
-      create_time: new Date().toISOString()
+      create_date: new Date().toLocaleString(), 
+      create_time: new Date().toLocaleString()
     }).select().single();
 
     if (error != null) {
