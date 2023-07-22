@@ -2,13 +2,14 @@ import { useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from 'react-native-paper';
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 
 export default function RegisterPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
+    const router = useRouter();
 
     const handleSubmit = async () => {
         if (email == '') {
@@ -26,10 +27,11 @@ export default function RegisterPage() {
             setErrMsg(error.message);
             return;
         }
+        router.push('/createProfile');
     }
 
     return (
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={70} style={styles.container}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={70} style={styles.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.inner}>
                     

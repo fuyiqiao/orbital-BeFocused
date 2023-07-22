@@ -7,7 +7,7 @@ import { Header } from 'react-native-elements';
 import { BarChart } from "react-native-gifted-charts";
 import { useAuth } from "../../contexts/auth";
 
-export default function summary() {
+export default function SummaryPage() {
     const weekData = [5, 4, 5, 4, 5, 4, 5]; 
     const { user } = useAuth();
     

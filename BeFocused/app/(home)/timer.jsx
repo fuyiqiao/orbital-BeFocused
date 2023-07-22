@@ -45,7 +45,7 @@ export default function TimerPage() {
         user_id: user.id, 
         start_time: start, 
         end_time: new Date().toISOString(), 
-        coins_earned: time, 
+        coins_earned: 0, 
         status: "Quit"
       }).select().single();
       

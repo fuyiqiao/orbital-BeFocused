@@ -1,7 +1,7 @@
 import { View, StyleSheet,TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { useState } from "react";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { Stack } from "expo-router";
 
@@ -10,6 +10,8 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
+    const router = useRouter();
+
     const handleSubmit = async () => {
         setErrMsg('');
         if (email == '') {
@@ -27,9 +29,10 @@ export default function LoginPage() {
             setErrMsg(error.message);
             return;
         }
+        router.push('/feed');
     }
     return (
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={70} style={styles.container}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={70} style={styles.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.inner}>
                     
