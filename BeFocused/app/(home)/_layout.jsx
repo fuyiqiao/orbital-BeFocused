@@ -13,8 +13,8 @@ export default function HomeLayout() {
       initialRouteName="timer"
     >
       <Tabs.Screen name="timer" options={{href:'/timer', title: 'Timer'}} />
-      <Tabs.Screen name="index" options={{href:'/', title: 'Feed'}} />
-      <Tabs.Screen name="feed" options={{href:null}} />
+      <Tabs.Screen name="index" options={{href:null}} />
+      <Tabs.Screen name="feed" options={{href:'/feed', title: 'Feed'}} />
       <Tabs.Screen name="summary" options={{href:'/summary', title: 'Summary'}} />
       <Tabs.Screen name="profile" options={{href:'/profile', title: 'Profile'}} />
     </Tabs>

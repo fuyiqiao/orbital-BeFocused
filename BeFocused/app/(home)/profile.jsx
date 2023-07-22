@@ -5,74 +5,6 @@ import { Link, useRouter } from 'expo-router';
 import { useAuth } from "../../contexts/auth";
 
 export default function ProfilePage() {
-  const dummyData = [
-    {
-      id: '1',
-      date: '19 June 2023',
-      duration: 'Total focus duration: 2h 55min',
-    },
-    {
-      id: '2',
-      date: '15 June 2023',
-      duration: 'Total focus duration: 1h 5min',
-    },
-    {
-      id: '3',
-      date: '10 June 2023',
-      duration: 'Total focus duration: 3h 00min',
-    },
-    {
-      id: '4',
-      date: '9 June 2023',
-      duration: 'Total focus duration: 0h 30min',
-    },
-    {
-      id: '5',
-      date: '4 June 2023',
-      duration: 'Total focus duration: 2h 50min',
-    },
-    {
-      id: '6',
-      date: '27 May 2023',
-      duration: 'Total focus duration: 4h 10min',
-    },
-    {
-      id: '7',
-      date: '23 May 2023',
-      duration: 'Total focus duration: 2h 00min',
-    },
-    {
-      id: '8',
-      date: '15 May 2023',
-      duration: 'Total focus duration: 2h 55min',
-    },
-    {
-      id: '9',
-      date: '8 May 2023',
-      duration: 'Total focus duration: 3h 55min',
-    },
-    {
-      id: '10',
-      date: '4 May 2023',
-      duration: 'Total focus duration: 2h 35min',
-    },
-    {
-      id: '11',
-      date: '1 May 2023',
-      duration: 'Total focus duration: 5h 15min',
-    },
-    {
-      id: '12',
-      date: '22 April 2023',
-      duration: 'Total focus duration: 3h 45min',
-    },
-    {
-      id: '13',
-      date: '20 April 2023',
-      duration: 'Total focus duration: 3h 20min',
-    },
-  ];
-
   const itemSeparator = () => {
     return <View style={styles.separator}/>;
   };
@@ -137,24 +69,72 @@ export default function ProfilePage() {
 
   const { user } = useAuth();
   const [currUser, setUser] = useState(''); 
+  const [coins, setCoins] = useState(''); 
   const [log, setLog] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [myPosts, setMyPosts] = useState([]);
+  const [profilePicture, setProfilePicture] = useState('')
 
   async function fetchUsername() {
     setRefreshing(true);
-    let { data } = await supabase.from('profiles').select('username').eq('id', user.id);
-    let { username:temp } = data[0]; 
+    let { data, error } = await supabase.from('profiles').select('username').eq('id', user.id);
     setRefreshing(false);
+    if (error) {
+      console.log(error);
+      return;
+    }
+    let { username:temp } = data[0]; 
     setUser(temp); 
+  }
+
+  async function fetchCoins() {
+    setRefreshing(true);
+    let { data, error } = await supabase.from('profiles').select('coin_count').eq('id', user.id);
+    if (error) {
+      console.log(error);
+      return;
+    }
+    setRefreshing(false);
+    let { coin_count:temp } = data[0]; 
+    setCoins(temp); 
+  }
+
+  async function fetchProfilePicture() {
+    setRefreshing(true);
+    let { data, error } = await supabase.from('profiles').select('avatar_url').eq('id', user.id);
+    setRefreshing(false);
+    if (error) {
+      console.log(error);
+      return;
+    }
+    let { avatar_url:temp } = data[0]; 
+    setProfilePicture(temp); 
+  }
+
+  async function fetchMyPosts() {
+    setRefreshing(true);
+    let { data, error } = await supabase.from('posts').select('*').eq('creator_id', user.id);
+    setRefreshing(false);
+    if (error) {
+      console.log(error);
+      return;
+    }
+    setMyPosts(data);
   }
 
   useEffect(() => {
     fetchUsername();
+    fetchCoins();
+    fetchMyPosts();
+    fetchProfilePicture();
   }, []);
 
   useEffect(() => {
     if (refreshing) {
       fetchUsername();
+      fetchCoins();
+      fetchMyPosts();
+      fetchProfilePicture();
       setRefreshing(false);
     }
   }, [refreshing]);
@@ -171,7 +151,7 @@ export default function ProfilePage() {
         ]}>
           <Animated.Text style={[styles.expandedTitle, {opacity: animateExpandedTitle}]}>{currUser}</Animated.Text>
           <Animated.Text style={[styles.collapsedTitle, {opacity: animateCollapsedTitle}]}>{currUser}</Animated.Text>
-          <Animated.Text style={[styles.coinsText, {opacity:animateCoins}]}>Focus Coins: 100</Animated.Text>
+          <Animated.Text style={[styles.coinsText, {opacity:animateCoins}]}>Focus Coins: {coins}</Animated.Text>
 
           <AnimatedTouchableOpacity 
             style={[styles.settingsButton, {opacity: animateSettings}]} 
@@ -188,20 +168,20 @@ export default function ProfilePage() {
 
           <Animated.Image
             style={[styles.image, {opacity: animateImageOpacity}]}
-            source={require('../../assets/sampleProfilePicture.png')}
+            source={{url : profilePicture}}
           />
 
       </Animated.View>
       <FlatList
-        data={dummyData}
+        data={myPosts}
         renderItem={({item}) => 
         <View style={styles.itemContainer}>
           <View style={styles.sessionImageContainer}>
-            <Image source={require('../../assets/studySession.png')} style={styles.sessionImage}/>
+            <Image source={{uri:item.post}} style={styles.sessionImage}/>
           </View>
           <View style={styles.entryContainer}>
-            <Text style={styles.dateText}>{item.date}</Text>
-            <Text style={styles.durationText}>{item.duration}</Text>
+            <Text style={styles.dateText}>{item.create_date}</Text>
+            <Text style={styles.durationText}>1h 15min</Text>
           </View>
         </View>
         }
