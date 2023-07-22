@@ -27,41 +27,6 @@ export default function ProfilePage() {
     }
   }, [refreshing]);
 
-  const dummyData = [
-    {
-      id: '1',
-      username: 'Ballsorter',
-      profilePicture: require('../../assets/sampleProfilePicture.png'),
-      post: require('../../assets/samplePost.png'),
-      description: 'so tired...',
-      time: '8min ago',
-    },
-    {
-      id: '2',
-      username: 'Koalamala',
-      profilePicture: require('../../assets/sampleProfilePicture.png'),
-      post: require('../../assets/samplePost2.png'),
-      description: 'v productive tdy!',
-      time: '2h ago',
-    },
-    {
-      id: '3',
-      username: 'chiaseedzz',
-      post: require('../../assets/samplePost3.png'),
-      description: 'finally done with revision',
-      time: '5h ago',
-    },
-    {
-      id: '4',
-      username: 't.teo.kbokki',
-      profilePicture: require('../../assets/sampleProfilePicture.png'),
-      post: require('../../assets/samplePost4.png'),
-      description: "can't wait for exams to be over",
-      time: '8h ago',
-    },
-  
-  ];
-
   const itemSeparator = () => {
     return <View style={styles.separator}/>;
   };

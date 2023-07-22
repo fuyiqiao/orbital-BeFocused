@@ -11,10 +11,10 @@ import { useAuth } from "../../contexts/auth";
 export default function TimerPage() {
   const [visible, setVisible] = useState(false);
   const { user } = useAuth();
+  const [time, setTime] = useState(1); 
 
   const CountDownTimer = () => {
     const [key, setKey] = useState(0);
-    const [time, setTime] = useState(1); 
     const [start, setStart] = useState(0); 
     const [end, setEnd] = useState(0); 
     const [playing, setPlaying] = useState(false); 
@@ -23,6 +23,7 @@ export default function TimerPage() {
     let set_time = 1; 
 
     const logSession = async () => {
+
       const { error } = await supabase.from('sessions').insert({ 
         user_id: user.id, 
         start_time: start, 
@@ -70,7 +71,7 @@ export default function TimerPage() {
           onPress={() => {
             setPlaying(false), 
             setKey(prevKey => prevKey + 1), 
-            setEnd(new Date().toISOString()), 
+            setEnd(new Date().toLocaleString()), 
             setQuit(true), 
             logQuitSession()}}
           />
@@ -162,8 +163,30 @@ export default function TimerPage() {
     };
     const dismissPrompt = () => {
       setVisible(!visible);
-      // todo: deduct coins 
+      deductCoins(); 
     };
+    const goToCamera = () => {
+      setVisible(!visible);
+      addCoins(); 
+    }
+
+    const deductCoins = async () => {
+      const { error } = await supabase.from('profiles').update({ coin_count: coins - 5 }).eq('id', user.id); 
+      console.log(coins, "deducted"); 
+      if (error != null) {
+        console.log(error);
+        return;
+      }
+    }
+
+    const addCoins = async () => {
+      const { error } = await supabase.from('profiles').update({ coin_count: coins + time }).eq('id', user.id); 
+      console.log(coins, "added"); 
+      if (error != null) {
+        console.log(error);
+        return;
+      }
+    }
   
     return (
       <View style={styles.bottomNavigationContainer}>
@@ -179,7 +202,7 @@ export default function TimerPage() {
             </Text>
             <View style={styles.cameraButtonContainer}>
               <Link href='../camera' asChild>
-                <TouchableOpacity style={styles.cameraButton} onPress={toggleBottomNavigationView}>
+                <TouchableOpacity style={styles.cameraButton} onPress={goToCamera}>
                 <Text style={styles.cameraButtonText}>Open Camera</Text>
               </TouchableOpacity>
               </Link>
@@ -196,14 +219,26 @@ export default function TimerPage() {
   };
 
   const [todaysSessions, setSessions] = useState([]);
+  const [coins, setCoins] = useState(0); 
   const [refreshing, setRefreshing] = useState(false);
+  const [refreshCoins, setRefreshCoins] = useState(false); 
 
   async function fetchSessions() {
+    const currDate = new Date().toDateString(); 
     setRefreshing(true);
-    let { data } = await supabase.from('sessions').select('start_time, end_time, status').eq('user_id', user.id);
+    let { data } = await supabase.from('sessions').select('start_time, end_time, status').eq('user_id', user.id).gte('start_time', currDate);
     setRefreshing(false);
     setSessions(data);
     console.log(todaysSessions); 
+  }
+
+  async function fetchCoins() {
+    setRefreshCoins(true);
+    let { data } = await supabase.from('profiles').select('coin_count').eq('id', user.id);
+    let { coin_count:temp } = data[0]; 
+    setRefreshCoins(false);
+    setCoins(temp); 
+    console.log(coins); 
   }
 
   useEffect(() => {
@@ -217,8 +252,19 @@ export default function TimerPage() {
     }
   }, [refreshing]);
 
+  useEffect(() => {
+    fetchCoins();
+  }, []);
+
+  useEffect(() => {
+    if (refreshCoins) {
+      fetchCoins();
+      setRefreshCoins(false);
+    }
+  }, [refreshCoins]);
+
   const OneSession = ({data}) => {
-    let {start_time: rawEndTime, end_time: rawStartTime, status: stat} = data; 
+    let {start_time: rawStartTime, end_time: rawEndTime, status: stat} = data; 
     const c = { time: rawStartTime };
     const startTime = (new Date(c.time).toLocaleTimeString()); 
     const d = { time: rawEndTime }; 

@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Alert, FlatList, Pressable, View, Button, TouchableOpacity } from 'react-native';
+import { SafeAreaView, StyleSheet, Alert, FlatList, Pressable, View, Button, TouchableOpacity, ScrollView } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { useEffect, useState } from 'react';
 import { Checkbox, Text } from 'react-native-paper';
@@ -9,9 +9,9 @@ import { useAuth } from "../../contexts/auth";
 
 export default function summary() {
     const weekData = [5, 4, 5, 4, 5, 4, 5]; 
-    const todayData = [[8.31, 2], [9.05, 1], [9.35, 1], [9.55, 4]]; 
     const { user } = useAuth();
     
+    //future extension: linking weekly data
     const chartData=[ 
         {value: weekData[0], label: 'mon'},
         {value: weekData[1], label: 'tue'},
@@ -44,18 +44,6 @@ export default function summary() {
         ); 
     }
 
-    const SingleSession = ({time, coins}) => {
-        return(
-            <View style={styles.singleSessionContainer2}>
-                <View style={styles.circle} />
-                <View style={styles.singleSessionContainer}>
-                    <Text>{time} am</Text>
-                    <Text>{coins} Focus Coins</Text>
-                </View>
-            </View>
-        ); 
-    }
-
     const [todaysSessions, setSessions] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
 
@@ -79,7 +67,7 @@ export default function summary() {
     }, [refreshing]);
 
     const OneSession = ({data}) => {
-        let {start_time: rawEndTime, end_time: rawStartTime, coins_earned: coins} = data; 
+        let {start_time: rawStartTime, end_time: rawEndTime, coins_earned: coins} = data; 
         const c = { time: rawStartTime };
         const startTime = (new Date(c.time).toLocaleTimeString()); 
         const d = { time: rawEndTime }; 
@@ -111,9 +99,11 @@ export default function summary() {
         <SafeAreaView>
             <View style={styles.container}>
                 <Text style={styles.titleText}>Summary</Text>
-                <Chart />
-                <Text style={styles.subheaderText}>Today's Sessions</Text>
-                <TodaysLogs/>
+                {/* <Chart /> */}
+                <Text style={styles.subtitle}>All Sessions</Text>
+                <ScrollView>
+                    <TodaysLogs/>
+                </ScrollView>
             </View>
         </SafeAreaView>
     ); 
@@ -148,7 +138,7 @@ const styles = StyleSheet.create({
     singleSessionContainer: {
         display: "flex", 
         flexDirection: "row", 
-        gap: 70, 
+        gap: 50, 
         padding: 10, 
     }, 
     singleSessionContainer2: {
@@ -163,5 +153,11 @@ const styles = StyleSheet.create({
         height: 20,
         borderRadius: 20 / 2,
         backgroundColor: "#304d6b",
+    },
+    subtitle: {
+        textAlign: 'center',
+        padding: 30,
+        fontSize: 25,
+        color: 'grey', 
     },
 });
