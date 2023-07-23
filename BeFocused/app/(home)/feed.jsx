@@ -16,8 +16,12 @@ export default function FeedPage() {
 
   async function fetchPosts() {
     setRefreshing(true);
-    let { data } = await supabase.from('posts').select('*');
+    let { data, error  } = await supabase.from('posts').select('*').order('create_time', {ascending: false});
     setRefreshing(false);
+    if (error) {
+      console.log(error);
+      return;
+    }
     setFeed(data);
     setFilteredData(data);
   }
@@ -73,8 +77,6 @@ export default function FeedPage() {
       extrapolate: 'clamp',  
     })
 
-  
-
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.header, {height: animateHeaderHeight}]}>
@@ -96,16 +98,13 @@ export default function FeedPage() {
         <View style={styles.itemContainer}>
           <View style={styles.topRowContainer}>
             <View style={styles.profileContainer}>
-              <Image source={require('../../assets/sampleProfilePicture.png')} style={styles.profilePicture}/>
+              <Image source={{uri:item.avatar_url}} style={styles.profilePicture}/>
               <Text style={styles.usernameText}>{item.username}</Text>
             </View>
             <Text style={styles.timeText}>{item.time}</Text>
           </View>
           <View style={styles.sessionImageContainer}>
             <Image source={{uri: item.post}} style={styles.sessionImage}/>
-          </View>
-          <View style={styles.descriptionContainer}>
-            <Text style={styles.descriptionText}>{item.description}</Text>
           </View>
         </View>
         }

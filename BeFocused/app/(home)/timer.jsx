@@ -11,7 +11,11 @@ import { useAuth } from "../../contexts/auth";
 export default function TimerPage() {
   const [visible, setVisible] = useState(false);
   const { user } = useAuth();
-  const [time, setTime] = useState(1); 
+  const [time, setTime] = useState(1);
+
+  const getDuration = () => {
+    return (time);
+  }
 
   const CountDownTimer = () => {
     const [key, setKey] = useState(0);
@@ -19,7 +23,7 @@ export default function TimerPage() {
     const [end, setEnd] = useState(0); 
     const [playing, setPlaying] = useState(false); 
     const [quit, setQuit] = useState(false); 
-    const durations = [1, 5, 10, 20, 30, 40, 50, 60];
+    const durations = [1, 5, 10, 15, 20, 30, 40, 50, 60, 75, 90, 120];
     let set_time = 1; 
 
     const logSession = async () => {
@@ -269,9 +273,9 @@ export default function TimerPage() {
   const OneSession = ({data}) => {
     let {start_time: rawStartTime, end_time: rawEndTime, status: stat} = data; 
     const c = { time: rawStartTime };
-    const startTime = (new Date(c.time).toLocaleTimeString()); 
+    const startTime = (new Date(c.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})); 
     const d = { time: rawEndTime }; 
-    const endTime = (new Date(d.time).toLocaleTimeString()); 
+    const endTime = (new Date(d.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})); 
     return(
         <View style={styles.singleSessionContainer2}>
             <View style={styles.circle} />
