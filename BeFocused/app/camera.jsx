@@ -4,6 +4,8 @@ import { Camera } from 'expo-camera'
 import { useRouter } from "expo-router";
 import { supabase } from '../lib/supabase';
 import { useAuth } from "../contexts/auth";
+import {getDuration} from './(home)/timer';
+
 
 export default function CameraPage() {
   const [cameraPermission, setCameraPermission] = useState(false)
@@ -14,6 +16,7 @@ export default function CameraPage() {
   const { user } = useAuth();
   const [currUser, setUser] = useState(''); 
   const [refreshing, setRefreshing] = useState(false);
+  const [avatar, setAvatar] = useState('');
 
   async function fetchUsername() {
     setRefreshing(true);
@@ -27,13 +30,27 @@ export default function CameraPage() {
     setUser(temp); 
   }
 
+  async function fetchAvatar() {
+    setRefreshing(true);
+    let { data, error } = await supabase.from('profiles').select('avatar_url').eq('id', user.id);
+    setRefreshing(false);
+    if (error) {
+      console.log(error);
+      return;
+    }
+    let { avatar_url:temp } = data[0]; 
+    setAvatar(temp); 
+  }
+
   useEffect(() => {
     fetchUsername();
+    fetchAvatar();
   }, []);
 
   useEffect(() => {
     if (refreshing) {
       fetchUsername();
+      fetchAvatar();
       setRefreshing(false);
     }
   }, [refreshing]);
@@ -75,10 +92,12 @@ export default function CameraPage() {
       creator_id: user.id, 
       post: uploadedImage,
       username: currUser, 
-      description: "study", 
-      create_date: new Date().toLocaleString(), 
-      create_time: new Date().toLocaleString()
+      create_date: new Date().toISOString(), 
+      create_time: new Date().toISOString(), 
+      avatar_url: avatar, 
     }).select().single();
+
+    console.log(getDuration);
 
     if (error != null) {
       console.log(error);

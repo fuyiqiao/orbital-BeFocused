@@ -73,9 +73,9 @@ export default function SummaryPage() {
     const OneSession = ({data}) => {
         let {start_time: rawStartTime, end_time: rawEndTime, coins_earned: coins} = data; 
         const c = { time: rawStartTime };
-        const startTime = (new Date(c.time).toLocaleTimeString()); 
+        const startTime = (new Date(c.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})); 
         const d = { time: rawEndTime }; 
-        const endTime = (new Date(d.time).toLocaleTimeString()); 
+        const endTime = (new Date(d.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})); 
         return(
             <View style={styles.singleSessionContainer2}>
                 <View style={styles.circle} />
@@ -100,68 +100,77 @@ export default function SummaryPage() {
     }
 
     return(
-        <SafeAreaView>
-            <View style={styles.container}>
-                <Text style={styles.titleText}>Summary</Text>
-                {/* <Chart /> */}
-                <Text style={styles.subtitle}>All Sessions</Text>
-                <ScrollView>
-                    <TodaysLogs/>
-                </ScrollView>
-            </View>
-        </SafeAreaView>
+      <View style={styles.container}>
+        <Text style={styles.titleText}>Summary</Text>
+        {/* <Chart /> */}
+        <Text style={styles.subtitle}>All Sessions</Text>
+        <View style={styles.scrollContainer}>
+          <ScrollView >
+            <TodaysLogs/>
+        </ScrollView>
+        </View>
+        
+      </View>
     ); 
 }
 
 const styles = StyleSheet.create({
-    container: {
-      padding: 10,
-      alignItems: 'center',
-      fontSize: 15, 
-    },
-    chartContainer: {
-        display: "flex", 
-        flexAlign: "center", 
-        borderWidth: 2, 
-        borderColor: '#E8E8E8', 
-        borderRadius: 5, 
-        alignItems: 'center',
-        justifyContent: 'center', 
-        width: 320, 
-        heigh: 210, 
-    }, 
-    titleText: {
-        fontSize: 40, 
-        textAlign: 'center'
-    },
-    subheaderText: {
-        fontSize: 25, 
-        textAlign: 'left', 
-        padding: 10
-    }, 
-    singleSessionContainer: {
-        display: "flex", 
-        flexDirection: "row", 
-        gap: 50, 
-        padding: 10, 
-    }, 
-    singleSessionContainer2: {
-        display: "flex", 
-        flexDirection: "row", 
-        gap: 5, 
-        padding: 10, 
-        alignItems: "baseline", 
-    }, 
-    circle: {
-        width: 20,
-        height: 20,
-        borderRadius: 20 / 2,
-        backgroundColor: "#304d6b",
-    },
-    subtitle: {
-        textAlign: 'center',
-        padding: 30,
-        fontSize: 25,
-        color: 'grey', 
-    },
+  container: {
+    flex: 1,
+    padding: 10,
+    alignItems: 'center',
+    fontSize: 15, 
+  },
+  chartContainer: {
+    display: "flex", 
+    flexAlign: "center", 
+    borderWidth: 2, 
+    borderColor: '#E8E8E8', 
+    borderRadius: 5, 
+    alignItems: 'center',
+    justifyContent: 'center', 
+    width: 320, 
+    heigh: 210, 
+  }, 
+  titleText: {
+    position:'absolute',
+    top: '10%',
+    fontSize: 40, 
+    textAlign: 'center'
+  },
+  subheaderText: {
+    fontSize: 25, 
+    textAlign: 'left', 
+    padding: 10
+  }, 
+  singleSessionContainer: {
+    display: "flex", 
+    flexDirection: "row", 
+    gap: 50, 
+    padding: 10, 
+  }, 
+  singleSessionContainer2: {
+    display: "flex", 
+    flexDirection: "row", 
+    gap: 5, 
+    padding: 10, 
+    alignItems: "baseline", 
+  }, 
+  circle: {
+    width: 20,
+    height: 20,
+    borderRadius: 20 / 2,
+    backgroundColor: "#304d6b",
+  },
+  subtitle: {
+    position:'absolute',
+    top: '14%',
+    textAlign: 'center',
+    padding: 30,
+    fontSize: 25,
+    color: 'grey', 
+  },
+  scrollContainer: {
+   paddingTop: '50%'
+  }
 });

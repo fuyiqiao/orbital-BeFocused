@@ -103,6 +103,7 @@ export default function ProfilePage() {
     setRefreshing(true);
     let { data, error } = await supabase.from('profiles').select('avatar_url').eq('id', user.id);
     setRefreshing(false);
+    console.log(data);
     if (error) {
       console.log(error);
       return;
@@ -113,7 +114,7 @@ export default function ProfilePage() {
 
   async function fetchMyPosts() {
     setRefreshing(true);
-    let { data, error } = await supabase.from('posts').select('*').eq('creator_id', user.id);
+    let { data, error } = await supabase.from('posts').select('*').eq('creator_id', user.id).order('create_time', {ascending: false});
     setRefreshing(false);
     if (error) {
       console.log(error);
@@ -181,7 +182,6 @@ export default function ProfilePage() {
           </View>
           <View style={styles.entryContainer}>
             <Text style={styles.dateText}>{item.create_date}</Text>
-            <Text style={styles.durationText}>Focus Duration: </Text>
           </View>
         </View>
         }

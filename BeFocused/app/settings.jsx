@@ -14,6 +14,7 @@ export default function SettingsPage() {
   const [password, setPassword] = useState(user.password);
   const [refreshing, setRefreshing] = useState(false);
   const [profilePicture, setProfilePicture] = useState('')
+  const [isUploaded, setIsUploaded] = useState(false);
 
   async function fetchUsername() {
     setRefreshing(true);
@@ -64,33 +65,43 @@ export default function SettingsPage() {
 
     if (!result.canceled) {
       setProfilePicture(result.assets[0].uri);
+      setIsUploaded(true);
     }
   }; 
 
   const handleSubmit = async () => {
-    let uploadedImage = null;
-    const { data, storageError } = await supabase.storage.from('avatars').upload(`${new Date().getTime()}`, { uri: profilePicture, type: 'jpg', name: 'name.jpg' });
-    if (storageError != null) {
-      console.log(storageError);
-      return;
+    let imageURL = profilePicture;
+    if (isUploaded) {
+      const { data, storageError } = await supabase.storage.from('avatars').upload(`${new Date().getTime()}`, { uri: profilePicture, type: 'jpg', name: 'name.jpg' });
+      if (storageError != null) {
+        console.log(storageError);
+        return;
+      }
+      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(data.path);
+      imageURL = publicUrl;
+      console.log(imageURL); 
     }
-    const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(data.path);
-    uploadedImage = publicUrl;
-    console.log(uploadedImage); 
     
-    const { error:insertError } = await supabase.from('profiles').update({ 
-      updated_at: new Date().toISOString(),
-      username: username, 
-      avatar_url: uploadedImage, 
-      full_name: null,
-      email: userEmail, 
-      coin_count: 10
-    }).eq('id', user.id);
-
-    if (insertError != null) {
-      console.log(insertError);
+    const { error:profilesInsertError } = await supabase.from('profiles').update({ 
+        updated_at: new Date().toISOString(),
+        username: username, 
+        avatar_url: imageURL, 
+      }).eq('id', user.id);
+    if (profilesInsertError != null) {
+      console.log("Profile table update error:" + profilesInsertError);
       return;
     }
+
+    const { error:postsInsertError } = await supabase.from('posts').update({ 
+      username: username, 
+      avatar_url: imageURL, 
+    }).eq('creator_id', user.id);
+
+    if (postsInsertError != null) {
+      console.log(postsInsertError);
+      return;
+    }
+
     router.back()
   }
 
