@@ -57,7 +57,7 @@ export default function CreateProfilePage() {
   }
 
   return (
-    <View behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={50} style={styles.container}>
+    <View style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <Text style={styles.title}>Create Profile</Text>
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '10%',
     alignSelf: 'center',
-    fontSize: 35
+    fontSize: 30
   },
   submitBox: {
     position: 'absolute',

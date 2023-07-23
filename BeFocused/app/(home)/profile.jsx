@@ -68,7 +68,7 @@ export default function ProfilePage() {
     });
 
   const { user } = useAuth();
-  const [currUser, setUser] = useState(''); 
+  const [username, setUsername] = useState(''); 
   const [coins, setCoins] = useState(0); 
   const [log, setLog] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -84,7 +84,7 @@ export default function ProfilePage() {
       return;
     }
     let { username:temp } = data[0]; 
-    setUser(temp); 
+    setUsername(temp); 
   }
 
   async function fetchCoins() {
@@ -149,8 +149,8 @@ export default function ProfilePage() {
             backgroundColor: '#304d6b',
           },
         ]}>
-          <Animated.Text style={[styles.expandedTitle, {opacity: animateExpandedTitle}]}>{currUser}</Animated.Text>
-          <Animated.Text style={[styles.collapsedTitle, {opacity: animateCollapsedTitle}]}>{currUser}</Animated.Text>
+          <Animated.Text style={[styles.expandedTitle, {opacity: animateExpandedTitle}]}>{username}</Animated.Text>
+          <Animated.Text style={[styles.collapsedTitle, {opacity: animateCollapsedTitle}]}>{username}</Animated.Text>
           <Animated.Text style={[styles.coinsText, {opacity:animateCoins}]}>Focus Coins: {coins}</Animated.Text>
 
           <AnimatedTouchableOpacity 
