@@ -225,7 +225,7 @@ export default function TimerPage() {
   async function fetchSessions() {
     const currDate = new Date().toDateString(); 
     setRefreshing(true);
-    let { data, error } = await supabase.from('sessions').select('start_time, end_time, status').eq('user_id', user.id).gte('start_time', currDate);
+    let { data, error } = await supabase.from('sessions').select('start_time, end_time, status').eq('user_id', user.id).gte('start_time', currDate).order('start_time', {ascending: false});
     setRefreshing(false);
     if (error != null) {
       console.log(error);

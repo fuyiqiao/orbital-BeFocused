@@ -1,10 +1,9 @@
 import React, { useEffect, useState} from 'react';
-import { StyleSheet, View, Animated, Text, Image, FlatList} from 'react-native';
+import { StyleSheet, View, Animated, Text, Image, FlatList, RefreshControl, ActivityIndicator } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { SearchBar } from "react-native-elements";
 
 export default function FeedPage() {
-
   const [feed, setFeed] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
@@ -92,35 +91,42 @@ export default function FeedPage() {
           />
         </Animated.View>
       </Animated.View>
-      <FlatList
-        data={filteredData}
-        renderItem={({item}) => 
-        <View style={styles.itemContainer}>
-          <View style={styles.topRowContainer}>
-            <View style={styles.profileContainer}>
-              <Image source={{uri:item.avatar_url}} style={styles.profilePicture}/>
-              <Text style={styles.usernameText}>{item.username}</Text>
+      <View>
+        {refreshing ? <ActivityIndicator /> : null}
+        <FlatList
+          data={filteredData}
+          renderItem={({item}) => 
+          <View style={styles.itemContainer}>
+            <View style={styles.topRowContainer}>
+              <View style={styles.profileContainer}>
+                <Image source={{uri:item.avatar_url}} style={styles.profilePicture}/>
+                <Text style={styles.usernameText}>{item.username}</Text>
+              </View>
+              <Text style={styles.timeText}>{item.time}</Text>
             </View>
-            <Text style={styles.timeText}>{item.time}</Text>
+            <View style={styles.sessionImageContainer}>
+              <Image source={{uri: item.post}} style={styles.sessionImage}/>
+            </View>
           </View>
-          <View style={styles.sessionImageContainer}>
-            <Image source={{uri: item.post}} style={styles.sessionImage}/>
-          </View>
-        </View>
-        }
-        keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={itemSeparator}
-        contentContainerStyle={{ paddingVertical: 25 }}
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{
-            nativeEvent: {
-              contentOffset: { y: AnimatedHeaderValue }
-            }
-          }],
-          { useNativeDriver: false }
-        )}
-      />
+          }
+          keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={itemSeparator}
+          contentContainerStyle={{ paddingVertical: 25 }}
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [{
+              nativeEvent: {
+                contentOffset: { y: AnimatedHeaderValue }
+              }
+            }],
+            { useNativeDriver: false }
+          )}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={fetchPosts} />
+          }
+        />
+      </View>
+      
     </View>
   );
 };

@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View, Animated, Text, Image, TouchableOpacity, FlatList } from 'react-native';
+import { RefreshControl, ActivityIndicator, StyleSheet, View, Animated, Text, Image, TouchableOpacity, FlatList } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { Link, useRouter } from 'expo-router';
 import { useAuth } from "../../contexts/auth";
@@ -173,31 +173,38 @@ export default function ProfilePage() {
           />
 
       </Animated.View>
-      <FlatList
-        data={myPosts}
-        renderItem={({item}) => 
-        <View style={styles.itemContainer}>
-          <View style={styles.sessionImageContainer}>
-            <Image source={{uri:item.post}} style={styles.sessionImage}/>
+      <View>
+        {refreshing ? <ActivityIndicator /> : null}
+        <FlatList
+          data={myPosts}
+          renderItem={({item}) => 
+          <View style={styles.itemContainer}>
+            <View style={styles.sessionImageContainer}>
+              <Image source={{uri:item.post}} style={styles.sessionImage}/>
+            </View>
+            <View style={styles.entryContainer}>
+              <Text style={styles.dateText}>{item.create_date}</Text>
+            </View>
           </View>
-          <View style={styles.entryContainer}>
-            <Text style={styles.dateText}>{item.create_date}</Text>
-          </View>
-        </View>
-        }
-        keyExtractor={(item) => item.id}
-        ItemSeparatorComponent={itemSeparator}
-        contentContainerStyle={{ paddingVertical: 25 }}
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{
-            nativeEvent: {
-              contentOffset: { y: AnimatedHeaderValue }
-            }
-          }],
-          { useNativeDriver: false }
-        )}
-      />
+          }
+          keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={itemSeparator}
+          contentContainerStyle={{ paddingVertical: 25 }}
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [{
+              nativeEvent: {
+                contentOffset: { y: AnimatedHeaderValue }
+              }
+            }],
+            { useNativeDriver: false }
+          )}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={fetchMyPosts && fetchUsername && fetchProfilePicture && fetchCoins} />
+          }
+        />
+      </View>
+      
     </View>
   );
 };

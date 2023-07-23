@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Alert, FlatList, Pressable, View, Button, TouchableOpacity, ScrollView } from 'react-native';
+import { RefreshControl, ActivityIndicator, StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { useEffect, useState } from 'react';
 import { Checkbox, Text } from 'react-native-paper';
@@ -49,7 +49,7 @@ export default function SummaryPage() {
 
     async function fetchSessions() {
         setRefreshing(true);
-        let { data, error } = await supabase.from('sessions').select('start_time, end_time, coins_earned').eq('user_id', user.id);
+        let { data, error } = await supabase.from('sessions').select('start_time, end_time, coins_earned').eq('user_id', user.id).order('start_time', {ascending: false});
         setRefreshing(false);
         if (error) {
           console.log(error);
@@ -105,9 +105,13 @@ export default function SummaryPage() {
         {/* <Chart /> */}
         <Text style={styles.subtitle}>All Sessions</Text>
         <View style={styles.scrollContainer}>
-          <ScrollView >
+          {refreshing ? <ActivityIndicator /> : null}   
+          <ScrollView 
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={fetchSessions} />
+            }>
             <TodaysLogs/>
-        </ScrollView>
+          </ScrollView>
         </View>
         
       </View>
