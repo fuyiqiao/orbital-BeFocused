@@ -23,7 +23,6 @@ export default function TimerPage() {
     let set_time = 1; 
 
     const logSession = async () => {
-
       const { error } = await supabase.from('sessions').insert({ 
         user_id: user.id, 
         start_time: start, 
@@ -31,13 +30,11 @@ export default function TimerPage() {
         coins_earned: time, 
         status: "Completed"
       }).select().single();
-      
-      console.log(start, end, "Completed"); 
-
       if (error != null) {
         console.log(error);
         return;
       }
+      console.log(start, end, "Completed"); 
     }
 
     const logQuitSession = async () => {
@@ -48,13 +45,11 @@ export default function TimerPage() {
         coins_earned: 0, 
         status: "Quit"
       }).select().single();
-      
-      console.log(start, end, "quit"); 
-
       if (error != null) {
         console.log(error);
         return;
       }
+      console.log(start, end, "quit"); 
     }
   
     const PauseAndQuit = () => {
@@ -172,20 +167,20 @@ export default function TimerPage() {
 
     const deductCoins = async () => {
       const { error } = await supabase.from('profiles').update({ coin_count: coins - 5 }).eq('id', user.id); 
-      console.log(coins, "deducted"); 
       if (error != null) {
         console.log(error);
         return;
       }
+      console.log(coins, "deducted"); 
     }
 
     const addCoins = async () => {
       const { error } = await supabase.from('profiles').update({ coin_count: coins + time }).eq('id', user.id); 
-      console.log(coins, "added"); 
       if (error != null) {
         console.log(error);
         return;
       }
+      console.log(coins, "added"); 
     }
   
     return (
@@ -226,17 +221,25 @@ export default function TimerPage() {
   async function fetchSessions() {
     const currDate = new Date().toDateString(); 
     setRefreshing(true);
-    let { data } = await supabase.from('sessions').select('start_time, end_time, status').eq('user_id', user.id).gte('start_time', currDate);
+    let { data, error } = await supabase.from('sessions').select('start_time, end_time, status').eq('user_id', user.id).gte('start_time', currDate);
     setRefreshing(false);
+    if (error != null) {
+      console.log(error);
+      return;
+    }
     setSessions(data);
     console.log(todaysSessions); 
   }
 
   async function fetchCoins() {
     setRefreshCoins(true);
-    let { data } = await supabase.from('profiles').select('coin_count').eq('id', user.id);
-    let { coin_count:temp } = data[0]; 
+    let { data, error } = await supabase.from('profiles').select('coin_count').eq('id', user.id);
     setRefreshCoins(false);
+    if (error != null) {
+      console.log(error);
+      return;
+    }
+    let { coin_count:temp } = data[0];
     setCoins(temp); 
     console.log(coins); 
   }

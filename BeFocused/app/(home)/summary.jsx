@@ -49,8 +49,12 @@ export default function SummaryPage() {
 
     async function fetchSessions() {
         setRefreshing(true);
-        let { data } = await supabase.from('sessions').select('start_time, end_time, coins_earned').eq('user_id', user.id);
+        let { data, error } = await supabase.from('sessions').select('start_time, end_time, coins_earned').eq('user_id', user.id);
         setRefreshing(false);
+        if (error) {
+          console.log(error);
+          return;
+        }
         setSessions(data);
         console.log(todaysSessions); 
     }

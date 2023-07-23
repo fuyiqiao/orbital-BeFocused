@@ -17,9 +17,13 @@ export default function CameraPage() {
 
   async function fetchUsername() {
     setRefreshing(true);
-    let { data } = await supabase.from('profiles').select('username').eq('id', user.id);
-    let { username:temp } = data[0]; 
+    let { data, error } = await supabase.from('profiles').select('username').eq('id', user.id);
     setRefreshing(false);
+    if (error) {
+      console.log(error);
+      return;
+    }
+    let { username:temp } = data[0]; 
     setUser(temp); 
   }
 
@@ -67,7 +71,6 @@ export default function CameraPage() {
       console.log(uploadedImage); 
     }
 
-
     const { error } = await supabase.from('posts').insert({ 
       creator_id: user.id, 
       post: uploadedImage,
@@ -81,7 +84,6 @@ export default function CameraPage() {
       console.log(error);
       return;
     }
-    console.log("image uploaded 2"); 
   }
 
   const retakePicture = () => {

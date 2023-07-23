@@ -156,7 +156,7 @@ export default function ProfilePage() {
           <AnimatedTouchableOpacity 
             style={[styles.settingsButton, {opacity: animateSettings}]} 
             onPress={() => {
-              router.push('../settings');
+              router.push('/settings');
             }}
           >
             <Text style={styles.buttonsText}>Settings</Text>

@@ -6,6 +6,6 @@ export const unstable_settings = {
 
 export default function AuthRoot() {
     return (
-        <Stack initialRouteName="login"/>
+        <Stack initialRouteName="login" screenOptions={{headerShown: false}}/>
     );
 }
