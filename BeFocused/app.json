@@ -1,4 +1,3 @@
-
 {
   "expo": {
     "plugins": [
@@ -25,7 +24,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fuyiqiao.BeFocused"
     },
     "android": {
       "adaptiveIcon": {
