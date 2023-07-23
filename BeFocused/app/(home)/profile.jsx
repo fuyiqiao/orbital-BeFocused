@@ -173,7 +173,7 @@ export default function ProfilePage() {
           />
 
       </Animated.View>
-      <View>
+      <View style={styles.scrollContainer}>
         {refreshing ? <ActivityIndicator /> : null}
         <FlatList
           data={myPosts}
@@ -307,5 +307,8 @@ const styles = StyleSheet.create({
     backgroundColor:'white',
     borderTopLeftRadius: 20, 
     borderTopRightRadius:20
+  }, 
+  scrollContainer: {
+    paddingBottom: 100
   }
 });

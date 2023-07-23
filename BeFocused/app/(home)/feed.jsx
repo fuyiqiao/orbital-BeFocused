@@ -91,7 +91,7 @@ export default function FeedPage() {
           />
         </Animated.View>
       </Animated.View>
-      <View>
+      <View style={styles.scrollContainer}>
         {refreshing ? <ActivityIndicator /> : null}
         <FlatList
           data={filteredData}
@@ -229,4 +229,7 @@ const styles = StyleSheet.create({
   descriptionText: {
     fontSize: 17
   },
+  scrollContainer: {
+    paddingBottom: 100
+  }
 });
